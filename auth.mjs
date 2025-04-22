@@ -39,3 +39,8 @@ const login = async (customerID, password) => {
 
     return {message: "login successful"}
 }
+
+export {
+    register,
+    login
+}
