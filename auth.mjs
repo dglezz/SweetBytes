@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs';
 import db from "./db.js";
 
+
+// function to register
 const register = async (customerID, name, email, phone, password) => {
   
     if (password.length <= 8) {
@@ -14,6 +16,7 @@ const register = async (customerID, name, email, phone, password) => {
             throw({message: 'USERNAME ALREADY EXISTS'});
         }
 
+        // adds new user to database
         const hash = bcrypt.hashSync(password);
         const ins_query = `INSERT INTO 
         Customer (CustomerID, Name, Email, Phone_Number, Cust_Password)
@@ -30,6 +33,8 @@ const register = async (customerID, name, email, phone, password) => {
     
 };
 
+
+//function to login
 const login = async (customerID, password) => {
     const log_query = "SELECT * FROM Customer WHERE CustomerID = ?"
     const [rows] = await db.query(log_query, [customerID])
