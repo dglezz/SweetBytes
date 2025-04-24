@@ -35,21 +35,36 @@ const updateOrder = async(orderID, itemID, quantity) => {
     const od_query = `SELECT * FROM OrderDetails WHERE OrderID = ? AND ItemID = ?`
     const [od_rows] = await db.query(od_query, [orderID, itemID])
 
-    // if this item is not already a part of the order
-    if (od_rows.length === 0) {
+    try {
+
+        // if this item is not already a part of the order
+        if (od_rows.length === 0) {
         const item_query = `INSERT INTO OrderDetails (OrderID, ItemID, Quantity)
         VALUES (?, ?, ?)`
         await db.query(item_query, [orderID, itemID, quantity])
-    }
+        }
 
-    // if this item is already in order
-    else {
-        const item_query = `UPDATE OrderDetails SET Quantity = ?
-        WHERE OrderID = ? AND ItemID = ?`
-        await db.query(item_query, [quantity, orderID, itemID])
-    }
+        // if this item is already in order
+        else {
+            const item_query = `UPDATE OrderDetails SET Quantity = ?
+            WHERE OrderID = ? AND ItemID = ?`
+            await db.query(item_query, [quantity, orderID, itemID])
+        }
 
-    return {message: `Order ${orderID} was updated`}
+        return {message: `Order ${orderID} was updated`}
+    } 
+    
+    catch (err) {
+        
+        console.log(err)
+
+        if (err.errno === 3819) {
+            throw {message: "Not enough inventory"}
+        }
+
+        throw {message: "Database Error"}
+    }
+    
 
 }
 
