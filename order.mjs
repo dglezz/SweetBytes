@@ -25,7 +25,7 @@ const createOrder = async (customerID, storeID) => {
 }
 
 // updates an order - pass in the current quantity of an item (not how it has changed)
-const updateOrder = async(orderID, itemID, quantity) => {
+const updateOrder = async (orderID, itemID, quantity) => {
     const o_query = `SELECT * FROM CustomerOrder WHERE OrderID = ?`
     const [rows] = await db.query(o_query, [orderID])
     if (rows.length === 0) {
@@ -69,7 +69,7 @@ const updateOrder = async(orderID, itemID, quantity) => {
 }
 
 // returns all items in an order
-const getAllItemsInOrder = async(orderID) => {
+const getAllItemsInOrder = async (orderID) => {
     const o_query = `SELECT i.ItemID, i.ItemName, i.Price, od.Quantity FROM CustomerOrder o
     INNER JOIN OrderDetails od
     ON o.OrderID = od.OrderID
@@ -80,8 +80,16 @@ const getAllItemsInOrder = async(orderID) => {
     return rows
 }
 
+const getOrdersByCustomer = async (customerID) => {
+    const c_query = `SELECT * FROM CustomerOrder WHERE CustomerID = ?`
+    const [rows] = await db.query(c_query, [customerID])
+    if (rows.length === 0) {return null}
+    return rows
+}
+
 export {
     createOrder,
     updateOrder,
-    getAllItemsInOrder
+    getAllItemsInOrder,
+    getOrdersByCustomer
 }
