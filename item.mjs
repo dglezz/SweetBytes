@@ -1,4 +1,5 @@
 import db from "./db.js"
+import getItemReviews from "./review.mjs"
 
 // Functions that help with item information
 
@@ -26,17 +27,19 @@ const getItemInfo = async (itemID) => {
     return rows[0]
 }
 
-// Gets item info + ingredients + nutrional info
+// Gets item info + ingredients + nutrional info + reviews
 const getItemInfoAll = async (itemID) => {
     const itemInfo = await getItemInfo(itemID)
     if (!itemInfo) {return null}
     
     const ingredients = await ingredientInfo(itemID)
     const nutr = await nutrInfo(itemID)
+    const rev = await getItemReviews(itemID)
     return {
         ...itemInfo,
         "ingredients": ingredients,
-        "nutrInfo": nutr
+        "nutrInfo": nutr,
+        "reviews": rev
     }
 }
 
