@@ -31,6 +31,23 @@ const addReview = async (itemID, customerID, content, starRating) => {
     }
 }
 
+const deleteReview = async (revID) => {
+    const r_query = `SELECT * FROM Review WHERE ReviewID = ?`
+    const [rows] = await db.query(r_query, [revID])
+    if (rows.length === 0) {
+        throw({message: "Review does not exist"});
+    }
+
+    try {
+        const d_query = `DELETE FROM Review WHERE ReviewID = ?`
+        await db.query(d_query, [revID])
+        return {message: `Review ${revID} was deleted`}
+    }
+    catch (err) {
+        throw({message: err})
+    }
+}
+
 const getReviewsByCustomer = async (customerID) => {
     const r_query = "SELECT * FROM Review WHERE CustomerID = ?"
     const [rows] = await db.query(r_query, [customerID])
@@ -47,5 +64,6 @@ const getItemReviews = async (itemID) => {
 export {
     getItemReviews,
     addReview,
+    deleteReview,
     getReviewsByCustomer
 }

@@ -68,6 +68,24 @@ const updateOrder = async (orderID, itemID, quantity) => {
 
 }
 
+const deleteItemInOrder = async (orderID, itemID) => {
+    const o_query = `SELECT * FROM OrderDetails WHERE OrderID = ? AND ItemID = ?`
+    const [rows] = await db.query(o_query, [orderID, itemID])
+    if (rows.length === 0) {
+        throw({message: "Order/Item does not exist"});
+    }
+
+    try {
+        const d_query = `DELETE FROM OrderDetails WHERE OrderID = ? AND ItemID = ?`
+        await db.query(d_query, [orderID, itemID])
+        return {message: `Item ${itemID} deleted from Order ${orderID}`}
+    }
+    catch (err) {
+        console.log(err)
+        throw({message: err})
+    }
+}
+
 // returns all items in an order
 const getAllItemsInOrder = async (orderID) => {
     const o_query = `SELECT i.ItemID, i.ItemName, i.Price, od.Quantity FROM CustomerOrder o
@@ -90,6 +108,7 @@ const getOrdersByCustomer = async (customerID) => {
 export {
     createOrder,
     updateOrder,
+    deleteItemInOrder,
     getAllItemsInOrder,
     getOrdersByCustomer
 }
