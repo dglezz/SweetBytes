@@ -1,10 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-import db from "/db.js"
+import axios from 'axios';
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  // testing backend server connection to frontend
+  const [count, setCount] = useState(0);
+  const [itemsData, setItemsData] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/getAllItems')
+      .then(response => {
+        setItemsData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching items data:', error);
+      });
+  }, []);
 
   return (
     <>
@@ -28,6 +41,17 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+
+      <div>
+      <h1>All Items Data:</h1>
+      <ul>
+        {itemsData.map((items, index) => (
+          <li key={index}>
+            {JSON.stringify(items)}
+          </li>
+        ))}
+      </ul>
+    </div>
     </>
   )
 }

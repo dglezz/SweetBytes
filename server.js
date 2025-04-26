@@ -1,7 +1,7 @@
 import express from "express";
-import mysql from "mysql2";
 import cors from "cors";
 import bcrypt from "bcrypt";
+import db from "./db.js";
 
 // Initialize an Express app
 const app = express();
@@ -9,6 +9,23 @@ app.use(express.json());
 
 // Allow resource sharing (allow calls to backend from certain URLs)
 app.use(cors({ origin: "http://localhost:5173" })); //Frontend URL
+
+app.get("/api/getAllItems", async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT * FROM Item');
+        console.log('Items:', rows);
+        res.json(rows); // Sending response to frontend 
+      } catch (err) {
+        console.error('Query error:', err);
+        res.status(500).json({ error: 'Database query failed', details: err.message }); // Sending error response to frontend
+      }
+  });
+
+  // Start the server
+const port = 8080;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
 
 // async function checkUserExists(username, badge_number) {
 //   const query = "SELECT * FROM users WHERE username = ? OR badge_number = ?";
@@ -102,7 +119,7 @@ app.use(cors({ origin: "http://localhost:5173" })); //Frontend URL
 //   }
 // });
 
-const port = 8080;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+// const port = 8080;
+// app.listen(port, () => {
+//   console.log(`Server running on port ${port}`);
+// });
