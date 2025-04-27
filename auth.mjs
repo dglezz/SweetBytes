@@ -24,6 +24,28 @@ const register = async (customerID, name, email, phone, password) => {
         await db.query(ins_query, [customerID, name, email, phone, hash]);
         const fullNameNoSpaces = name.replace(/\s+/g, '').toLowerCase();
         await db.query(`CREATE USER '${fullNameNoSpaces}'@'%' IDENTIFIED BY '${password}'`);
+        await db.query(`GRANT ROLE customer_role TO '${fullNameNoSpaces}'@'%'`);
+        const viewCustDetails = `
+        CREATE VIEW \`${fullNameNoSpaces}_view_cust_details\` AS
+        SELECT * FROM Customer
+        WHERE CustomerID = ?
+        `;
+        await db.query(viewCustDetails, [customerID]);
+        const viewReviews = `
+        CREATE VIEW \`${fullNameNoSpaces}_view_review\` AS
+        SELECT * FROM Review
+        WHERE CustomerID = ?
+        `;
+        await db.query(viewReviews, [customerID]);
+        const viewOrderDetails = `
+        CREATE VIEW \`${fullNameNoSpaces}_view_order_details\` AS
+        SELECT o.*, od.*, i.*
+        FROM CustomerOrder o
+        INNER JOIN OrderDetails od ON o.OrderID = od.OrderID
+        INNER JOIN Item i ON od.ItemID = i.ItemID
+        WHERE o.CustomerID = ?
+        `;
+        await db.query(viewOrderDetails, [customerID]);
     }
 
     catch (err) {
