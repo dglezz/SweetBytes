@@ -81,17 +81,17 @@ function App() {
         <Route
           path="/profile"
           element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
+            // <ProtectedRoute>
+            <ProfilePage />
+            // </ProtectedRoute>
           }
         />
         <Route
           path="/shop"
           element={
-            <ProtectedRoute>
-              <ShoppingPage itemsData={itemsData} addToCart={addToCart} />
-            </ProtectedRoute>
+            // <ProtectedRoute>
+            <ShoppingPage itemsData={itemsData} addToCart={addToCart} />
+            // </ProtectedRoute>
           }
         />
       </Routes>

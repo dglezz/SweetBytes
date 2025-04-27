@@ -114,6 +114,22 @@ body {
   justify-content: space-between;
 }
 
+.shopping-item h3,
+.shopping-item p {
+  margin: 8px 0;
+}
+
+.shopping-item a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.shopping-item:hover {
+  transform: translateY(-5px);
+  transition: transform 0.2s ease;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 /* ITEMS PAGE */
 
 /* Image styling */
