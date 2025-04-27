@@ -8,12 +8,14 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import HomePage from "./components/HomePage";
 import ShoppingPage from "./components/ShoppingPage";
+import CartPage from "./components/CartPage";
 import ItemPage from "./components/ItemPage";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import "./index.css";
 
 function App() {
+  const [cartItems, setCartItems] = useState([]);
   const [itemsData, setItemsData] = useState([]);
 
   useEffect(() => {
@@ -27,13 +29,50 @@ function App() {
       });
   }, []);
 
+  const addToCart = (item) => {
+    setCartItems((prevCartItems) => {
+      const existingItem = prevCartItems.find(
+        (cartItem) => cartItem.ItemID === item.ItemID
+      );
+      if (existingItem) {
+        return prevCartItems.map((cartItem) =>
+          cartItem.ItemID === item.ItemID
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
+        );
+      } else {
+        return [...prevCartItems, { ...item, quantity: 1 }];
+      }
+    });
+  };
+
+  const updateCartItem = (itemId, delta) => {
+    setCartItems(
+      (prevCartItems) =>
+        prevCartItems
+          .map((cartItem) =>
+            cartItem.ItemID === itemId
+              ? { ...cartItem, quantity: cartItem.quantity + delta }
+              : cartItem
+          )
+          .filter((cartItem) => cartItem.quantity > 0) // remove if quantity becomes 0
+    );
+  };
+
   return (
     <Router>
       <Header /> {}
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/shop" element={<ShoppingPage itemsData={itemsData} />} />
-        <Route path="/item/:id" element={<ItemPage itemsData={itemsData} />} />
+        <Route
+          path="/shop"
+          element={<ShoppingPage itemsData={itemsData} addToCart={addToCart} />}
+        />
+        <Route
+          path="/item/:id"
+          element={<ItemPage itemsData={itemsData} addToCart={addToCart} />}
+        />
+        <Route path="/cart" element={<CartPage cartItems={cartItems} />} />
       </Routes>
       <Footer />
     </Router>
