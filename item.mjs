@@ -3,7 +3,7 @@ import { getItemReviews } from "./review.mjs";
 
 // Functions that help with item information
 
-// Gets ingredient Info
+// Gets ingredient Info **
 const ingredientInfo = async (itemID) => {
   const ing_query = "call itemIngredients(?)";
   const [rows] = await db.query(ing_query, [itemID]);
@@ -13,7 +13,7 @@ const ingredientInfo = async (itemID) => {
   return rows[0];
 };
 
-// Gets Nutritional Info
+// Gets Nutritional Info **
 const nutrInfo = async (itemID) => {
   const nutr_query = "SELECT * FROM NutritionalInfo WHERE ItemID = ?";
   const [rows] = await db.query(nutr_query, [itemID]);
