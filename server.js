@@ -10,6 +10,7 @@ import * as item from "./item.mjs"
 import * as order from "./order.mjs"
 import * as cust from "./customer.mjs"
 import * as review from "./review.mjs"
+import * as store from "./store.mjs"
 
 // Initialize an Express app
 const app = express();
@@ -248,22 +249,6 @@ app.get("/api/getAllUserInfo", async (req, res) => {
   }
 })
 
-
-
-// get all the stores 
-app.get("/api/getAllStores", async (req, res) => {
-  try{
-    const l_query = `SELECT * FROM Store`
-    const [rows] = await db.query(l_query)
-    res.json(rows);
-  } catch (err) {
-    console.error("Query error:", err);
-    res
-      .status(500)
-      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
-  }
-});
-
 // REVIEW
 
 // Add a review
@@ -282,7 +267,37 @@ app.post("/api/review", async (req, res) => {
     res.status(201).json(result);
   } catch (error) {
     console.error("Error adding review:", error);
-    res.status(500).json({ message: "Error adding review", error: error.message });
+    res.status(500).json({ message: "Error adding review" });
+  }
+});
+
+// Delete a review
+app.delete("/api/review/:revID", async (req, res) => {
+  const { revID } = req.params;
+  const customerID = req.session.user;
+  
+  try {
+    const result = await review.deleteReview(revID, customerID);
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    res.status(500).json({ message: "Error deleting review" });
+  }
+});
+
+// STORE
+
+// get all the stores 
+app.get("/api/getAllStores", async (req, res) => {
+  try{
+    const result = await store.getAllStores()
+    res.json(result);
+  } catch (err) {
+    console.error("Query error:", err);
+    res
+      .status(500)
+      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
   }
 });
 

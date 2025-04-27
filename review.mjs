@@ -30,11 +30,14 @@ const addReview = async (itemID, customerID, content, starRating) => {
   }
 };
 
-const deleteReview = async (revID) => {
+const deleteReview = async (revID, customerID) => {
   const r_query = `SELECT * FROM Review WHERE ReviewID = ?`;
   const [rows] = await db.query(r_query, [revID]);
+  if (rows[0]["CustomerID"] !== customerID) {
+    throw({message: "User is not authorized to delete this review"})
+  }
   if (rows.length === 0) {
-    throw { message: "Review does not exist" };
+    throw ({ message: "Review does not exist" });
   }
 
   try {
