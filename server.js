@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import bcrypt from "bcrypt";
 import db from "./db.js";
+import { getAllReviews } from "./review.mjs";
 
 // Initialize an Express app
 const app = express();
@@ -11,17 +12,28 @@ app.use(express.json());
 app.use(cors({ origin: "http://localhost:5173" })); //Frontend URL
 
 app.get("/api/getAllItems", async (req, res) => {
-    try {
-        const [rows] = await db.query('SELECT * FROM Item');
-        console.log('Items:', rows);
-        res.json(rows); // Sending response to frontend 
-      } catch (err) {
-        console.error('Query error:', err);
-        res.status(500).json({ error: 'Database query failed', details: err.message }); // Sending error response to frontend
-      }
-  });
+  try {
+    const [rows] = await db.query("SELECT * FROM Item");
+    console.log("Items:", rows);
+    res.json(rows); // Sending response to frontend
+  } catch (err) {
+    console.error("Query error:", err);
+    res
+      .status(500)
+      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
+  }
+});
 
-  // Start the server
+app.get("/api/getReviews", async (req, res) => {
+  try {
+    const reviews = await getAllReviews();
+    res.json(reviews);
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    res.status(500).json({ error: "Failed to fetch reviews" });
+  }
+});
+// Start the server
 const port = 8080;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
