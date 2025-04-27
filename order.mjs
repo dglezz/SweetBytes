@@ -1,6 +1,6 @@
 import db from "./db.js"
 
-// creates an OrderID - if its already in use, it will call itself and try to create another one
+// creates an OrderID - if its already in use, it will call itself and try to create another one **
 const generateOrderID = async() => {
     const curr_id = "O" + Math.random().toString(36).slice(2, 8).toUpperCase();
     const dup_query = "SELECT * FROM CustomerOrder WHERE OrderID = ?";
@@ -11,7 +11,7 @@ const generateOrderID = async() => {
     return generateOrderID()
 }
 
-// creates a new order
+// creates a new order **
 const createOrder = async (customerID, storeID) => {
     const orderID = await generateOrderID();
     const date = new Date();
@@ -24,7 +24,7 @@ const createOrder = async (customerID, storeID) => {
     }
 }
 
-// updates an order - pass in the current quantity of an item (not how it has changed)
+// updates an order - pass in the current quantity of an item (not how it has changed) **
 const updateOrder = async (orderID, itemID, quantity) => {
     const o_query = `SELECT * FROM CustomerOrder WHERE OrderID = ?`
     const [rows] = await db.query(o_query, [orderID])
@@ -65,9 +65,9 @@ const updateOrder = async (orderID, itemID, quantity) => {
         throw {message: "Database Error"}
     }
     
-
 }
 
+// delete an item in an order  **
 const deleteItemInOrder = async (orderID, itemID) => {
     const o_query = `SELECT * FROM OrderDetails WHERE OrderID = ? AND ItemID = ?`
     const [rows] = await db.query(o_query, [orderID, itemID])

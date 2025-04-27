@@ -23,7 +23,7 @@ const nutrInfo = async (itemID) => {
   return rows[0];
 };
 
-// Gets basic item info - Name and Price
+// Gets basic item info - Name and Price **
 const getItemInfo = async (itemID) => {
   const i_query = "SELECT * FROM Item WHERE ItemID = ?";
   const [rows] = await db.query(i_query, [itemID]);
@@ -33,7 +33,7 @@ const getItemInfo = async (itemID) => {
   return rows[0];
 };
 
-// Gets item info + ingredients + nutrional info + reviews
+// Gets item info + ingredients + nutrional info + reviews **
 const getItemInfoAll = async (itemID) => {
   const itemInfo = await getItemInfo(itemID);
   if (!itemInfo) {
@@ -51,12 +51,13 @@ const getItemInfoAll = async (itemID) => {
   };
 };
 
-// Gets basic item info for all items
+// Gets basic item info for all items **
 const getAllItems = async () => {
   const [rows] = await db.query("SELECT * FROM Item");
   return rows;
 };
 
+// Gets items in stock **
 const getItemsInStock = async (sID) => {
   const query = `
   SELECT ItemID, Name, Price, Quantity

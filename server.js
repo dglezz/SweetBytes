@@ -26,6 +26,8 @@ app.use(
 // Allow resource sharing (allow calls to backend from certain URLs)
 app.use(cors({ origin: "http://localhost:5173" })); //Frontend URL
 
+
+// Gets basic item info for all items 
 app.get("/api/getAllItems", async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM Item");
@@ -88,6 +90,7 @@ app.get("/api/protected-data", (req, res) => {
 
 // transferring functions from the mjs files (We can't use those anymore) to be routes 
 
+// ITEMS: 
 // get Ingredient Info 
 app.get("/api/getIngredientInfo", async (req, res) => {
   try {
@@ -110,7 +113,7 @@ app.get("/api/getIngredientInfo", async (req, res) => {
 });
 
 
-// get Nutritional info **
+// get Nutritional info 
 app.get("/api/getNutritionInfo", async (req, res) => {
   try {
     const nutr_query = "SELECT * FROM NutritionalInfo WHERE ItemID = ?";
@@ -128,6 +131,207 @@ app.get("/api/getNutritionInfo", async (req, res) => {
       .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
   }
 });
+
+
+// Gets basic Item info - Name and Price 
+app.get("/api/getBasicItemInfo", async (req, res) => {
+  try {
+    const i_query = "SELECT * FROM Item WHERE ItemID = ?";
+    const [rows] = await db.query(i_query, [itemID]);
+    if (rows.length === 0) {
+      // return null;
+      res.json(null);
+    }
+    // return rows[0];
+    res.json(rows[0]);
+  } catch (err) {
+    console.error("Query error:", err);
+    res
+      .status(500)
+      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
+  }
+});
+
+
+// Gets item info + ingredients + nutrional info + reviews
+app.get("/api/getExtendedItemInfo", async (req, res) => {
+  try {
+    const itemInfo = await getItemInfo(itemID);
+    if (!itemInfo) {
+      // return null;
+      res.json(null);
+    }
+  
+    const ingredients = await ingredientInfo(itemID);
+    const nutr = await nutrInfo(itemID);
+    const rev = await getItemReviews(itemID);
+    // return {
+    //   ...itemInfo,
+    //   ingredients: ingredients,
+    //   nutrInfo: nutr,
+    //   reviews: rev,
+    // };
+    res.json({
+      ...itemInfo,
+      ingredients: ingredients,
+      nutrInfo: nutr,
+      reviews: rev,
+    });
+  } catch (err) {
+    console.error("Query error:", err);
+    res
+      .status(500)
+      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
+  }
+});
+
+// Gets items in stock 
+app.get("/api/getItemsInStock", async (req, res) => {
+  try {
+    const query = `
+    SELECT ItemID, Name, Price, Quantity
+    FROM customer_view_items_per_store
+    WHERE StoreID = ?`
+    const [rows] = await db.query(query, [sID]);
+    if (rows.length == 0) {
+      // return null;
+      res.json(null);
+    }
+    // return rows;
+    res.json(rows);
+  } catch (err) {
+    console.error("Query error:", err);
+    res
+      .status(500)
+      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
+  }
+});
+
+
+// ORDER:
+// creates an OrderID - if its already in use, it will call itself and try to create another one (idk if the logic for this will work)
+app.get("/api/getCreateOrderID", async (req, res) => {
+  try {
+    const curr_id = "O" + Math.random().toString(36).slice(2, 8).toUpperCase();
+    const dup_query = "SELECT * FROM CustomerOrder WHERE OrderID = ?";
+    const [rows] = await db.query(dup_query, [curr_id])
+    if (rows.length === 0) {
+        // return curr_id
+        res.json(curr_id);
+    }
+    // return generateOrderID();
+    res.json(generateOrderID())
+  } catch (err) {
+    console.error("Query error:", err);
+    res
+      .status(500)
+      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
+  }
+});
+
+// creates a new order
+app.get("/api/getCreateOrder", async (req, res) => {
+  try {
+    const orderID = await generateOrderID();
+    const date = new Date();
+    const o_query = `INSERT INTO CustomerOrder (OrderID, OrderDate, CustomerID, Price, StoreID)
+    VALUES (?, ?, ?, ?, ?)`
+    await db.query(o_query, [orderID, date, customerID, 0.00, storeID]);
+    // return {
+    //     "message": "Order Created",
+    //     "orderID": orderID
+    // }
+    res.json({
+      "message": "Order Created",
+      "orderID": orderID
+    });
+  } catch (err) {
+    console.error("Query error:", err);
+    res
+      .status(500)
+      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
+  }
+});
+
+// updates an order - pass in the current quantity of an item (not how it has changed)
+app.get("/api/getUpdateOrder", async (req, res) => {
+  try {
+    const o_query = `SELECT * FROM CustomerOrder WHERE OrderID = ?`
+    const [rows] = await db.query(o_query, [orderID])
+    if (rows.length === 0) {
+        throw({message: "Order does not exist"});
+    }
+
+    const od_query = `SELECT * FROM OrderDetails WHERE OrderID = ? AND ItemID = ?`
+    const [od_rows] = await db.query(od_query, [orderID, itemID])
+
+    try {
+
+        // if this item is not already a part of the order
+        if (od_rows.length === 0) {
+        const item_query = `INSERT INTO OrderDetails (OrderID, ItemID, Quantity)
+        VALUES (?, ?, ?)`
+        await db.query(item_query, [orderID, itemID, quantity])
+        }
+
+        // if this item is already in order
+        else {
+            const item_query = `UPDATE OrderDetails SET Quantity = ?
+            WHERE OrderID = ? AND ItemID = ?`
+            await db.query(item_query, [quantity, orderID, itemID])
+        }
+
+        // return {message: `Order ${orderID} was updated`}
+        res.json({message: `Order ${orderID} was updated`});
+    } 
+    
+    catch (err) {
+        
+        console.log(err)
+
+        if (err.errno === 3819) {
+            throw {message: "Not enough inventory"}
+        }
+
+        throw {message: "Database Error"}
+    }
+    
+  } catch (err) {
+    console.error("Query error:", err);
+    res
+      .status(500)
+      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
+  }
+});
+
+
+// delete an item in an order 
+app.get("/api/deleteItemInOrder", async (req, res) => {
+  try {
+    const o_query = `SELECT * FROM OrderDetails WHERE OrderID = ? AND ItemID = ?`
+    const [rows] = await db.query(o_query, [orderID, itemID])
+    if (rows.length === 0) {
+        throw({message: "Order/Item does not exist"});
+    }
+
+    try {
+        const d_query = `DELETE FROM OrderDetails WHERE OrderID = ? AND ItemID = ?`
+        await db.query(d_query, [orderID, itemID])
+        // return {message: `Item ${itemID} deleted from Order ${orderID}`}
+        res.json({message: `Item ${itemID} deleted from Order ${orderID}`});
+    }
+    catch (err) {
+        console.log(err)
+        throw({message: err})
+    }
+  } catch (err) {
+    console.error("Query error:", err);
+    res
+      .status(500)
+      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
+  }
+});
+
 
 
 // Start the server
