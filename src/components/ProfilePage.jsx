@@ -16,10 +16,9 @@ const ProfilePage = () => {
           }
         );
         const data = await response.json();
-
-        setName(data.name);
-        setEmail(data.email);
-        setPhone(data.phone);
+        setName(data.Name);
+        setEmail(data.Email);
+        setPhone(data.Phone);
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -28,8 +27,25 @@ const ProfilePage = () => {
     fetchProfile();
   }, []);
 
-  const handleSave = () => {
-    alert("Changes saved!");
+  const handleSave = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/updateUserInfo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, phone }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.message || "Changes saved successfully!");
+      } else {
+        alert(data.message || "Failed to save changes.");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Error updating profile.");
+    }
   };
 
   const handleClear = () => {
@@ -37,9 +53,29 @@ const ProfilePage = () => {
     setPhone("");
   };
 
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete your profile?")) {
-      alert("Profile deleted!");
+  const handleDelete = async () => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete your profile? This action cannot be undone."
+      )
+    ) {
+      try {
+        const response = await fetch("http://localhost:8080/api/deleteUser", {
+          method: "DELETE",
+          credentials: "include",
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message || "Profile deleted successfully!");
+          window.location.href = "/"; // Redirect to home after delete
+        } else {
+          alert(data.message || "Failed to delete profile.");
+        }
+      } catch (error) {
+        console.error("Error deleting profile:", error);
+        alert("Error deleting profile.");
+      }
     }
   };
 
@@ -48,7 +84,8 @@ const ProfilePage = () => {
       <h2>Account Page</h2>
       <div className="profile-box">
         <div className="profile-icon">👤</div>
-        <h1 className="profile-name">{name || "Loading..."}</h1> {}
+        <h1 className="profile-name">{name || "Loading..."}</h1>
+
         <div className="profile-field">
           <label>Email:</label>
           <input
@@ -57,6 +94,7 @@ const ProfilePage = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
+
         <div className="profile-field">
           <label>Phone Number:</label>
           <input
@@ -65,6 +103,7 @@ const ProfilePage = () => {
             onChange={(e) => setPhone(e.target.value)}
           />
         </div>
+
         <div className="profile-buttons">
           <button onClick={handleSave}>Save Changes</button>
           <button onClick={handleClear}>Clear All</button>
