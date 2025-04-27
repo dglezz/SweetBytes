@@ -51,16 +51,17 @@ app.get("/api/getReviews", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch reviews" });
   }
 });
-app.post("/api/signup", async (req, res) => {
-  const { username, name, email, phone, password } = req.body;
-  try {
-    console.log("Received signup request:", req.body); // 👈 ADD THIS
 
-    await register(username, name, email, phone, password);
+app.post("/api/signup", async (req, res) => {
+  const { customerID, name, email, phone, password } = req.body;
+  try {
+    console.log("Received signup request:", req.body);
+
+    await register(customerID, name, email, phone, password);
 
     res.json({ message: "Signup successful!" });
   } catch (error) {
-    console.error("Signup error:", error); // 👈 ADD THIS
+    console.error("Signup error:", error);
 
     res.status(500).json({ message: "Signup failed." });
   }
