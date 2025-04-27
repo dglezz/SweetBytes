@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function ItemPage() {
+function ItemPage({ addToCart }) {
   const { id } = useParams();
   const [item, setItem] = useState(null);
   const [error, setError] = useState(null);
@@ -32,7 +32,12 @@ function ItemPage() {
           <p>
             <strong>Price: ${parseFloat(item.Price).toFixed(2)}</strong>
           </p>
-          <button>Add to Cart</button>
+          <button
+            className="add-to-cart-button"
+            onClick={() => addToCart(item)}
+          >
+            Add to Cart
+          </button>
 
           <h3>Nutritional Information</h3>
           {item.nutrInfo ? (
