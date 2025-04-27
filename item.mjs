@@ -49,6 +49,14 @@ const getAllItems = async () => {
     return rows
 }
 
+const getItemsInStock = async() => {
+    const [rows] = await db.query("SELECT * FROM customer_view")
+    if (rows.length == 0) {
+        return null;
+    }
+    return rows;
+}
+
 export {
     getItemInfo,
     getItemInfoAll,
