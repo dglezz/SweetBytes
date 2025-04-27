@@ -48,3 +48,17 @@
   background-color: #ff69b4;
   color: #fff;
 }
+
+.link-text {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.link-text a {
+  color: #ff69b4;
+  text-decoration: none;
+}
+
+.link-text a:hover {
+  text-decoration: underline;
+}

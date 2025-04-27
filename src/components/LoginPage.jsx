@@ -1,6 +1,6 @@
-import "../LoginPage.css";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import "../LoginPage.css";
 
 function LoginPage() {
   const [customerID, setCustomerID] = useState("");
@@ -20,7 +20,7 @@ function LoginPage() {
     });
 
     if (res.status === 200) {
-      navigate("/profile"); // Redirect to profile page after login
+      navigate("/profile");
     } else {
       alert("Invalid credentials");
     }
@@ -45,6 +45,10 @@ function LoginPage() {
           />
           <button type="submit">Log In</button>
         </form>
+
+        <p className="link-text">
+          Don't have an account? <Link to="/signup">Sign up here</Link>
+        </p>
       </div>
     </div>
   );
