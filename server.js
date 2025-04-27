@@ -9,6 +9,7 @@ import { register, login } from "./auth.mjs";
 import * as item from "./item.mjs"
 import * as order from "./order.mjs"
 import * as cust from "./customer.mjs"
+import * as review from "./review.mjs"
 
 // Initialize an Express app
 const app = express();
@@ -98,6 +99,7 @@ app.get("/api/protected-data", (req, res) => {
 
 // ITEMS:
 
+// get info on an item
 app.get("/api/items/:id", async (req, res) => {
   const itemId = req.params.id;
   try {
@@ -108,6 +110,17 @@ app.get("/api/items/:id", async (req, res) => {
     res.status(500).send("Error retrieving item details");
   }
 });
+
+// get basic info for all items
+app.get("api/allItems", async (req, res) => {
+  try {
+    const result = await item.getAllItems()
+    res.json(result)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Error retrieving items");
+  }
+})
 
 
 // Gets items in stock
@@ -208,7 +221,7 @@ app.get("api/user/orders", async (req, res) => {
 
 // CUSTOMER
 // Get customer info
-app.get("/api/getUserInfo"), async (req, res) => {
+app.get("/api/getUserInfo", async (req, res) => {
   const customerID = req.session.user
 
   try {
@@ -219,10 +232,10 @@ app.get("/api/getUserInfo"), async (req, res) => {
     console.error("Error Fetching User Info", error)
     res.status(500).json({message: "Error retrieving user info"})
   }
-}
+})
 
 // Get all customer info
-app.get("/api/getAllUserInfo"), async (req, res) => {
+app.get("/api/getAllUserInfo", async (req, res) => {
   const customerID = req.session.user
 
   try {
@@ -233,7 +246,7 @@ app.get("/api/getAllUserInfo"), async (req, res) => {
     console.error("Error Fetching User Info All", error)
     res.status(500).json({message: "Error retrieving user info all"})
   }
-}
+})
 
 
 
@@ -250,6 +263,29 @@ app.get("/api/getAllStores", async (req, res) => {
       .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
   }
 });
+
+// REVIEW
+
+// Add a review
+app.post("/api/review", async (req, res) => {
+
+  const { itemID, content, starRating } = req.body;
+  const customerID = req.session.user;
+
+  if (!itemID || !content || !starRating) {
+    return res.status(400).json({ message: "Missing required fields: itemID, content, starRating" });
+  }
+
+  try {
+    const result = await review.addReview(itemID, customerID, content, starRating);
+
+    res.status(201).json(result);
+  } catch (error) {
+    console.error("Error adding review:", error);
+    res.status(500).json({ message: "Error adding review", error: error.message });
+  }
+});
+
 
 // Start the server
 const port = 8080;
