@@ -22,6 +22,8 @@ const register = async (customerID, name, email, phone, password) => {
         Customer (CustomerID, Name, Email, Phone_Number, Cust_Password)
         VALUES (?, ?, ?, ?, ?)`;
         await db.query(ins_query, [customerID, name, email, phone, hash]);
+        const fullNameNoSpaces = name.replace(/\s+/g, '').toLowerCase();
+        await db.query(`CREATE USER '${fullNameNoSpaces}'@'%' IDENTIFIED BY '${password}'`);
     }
 
     catch (err) {
