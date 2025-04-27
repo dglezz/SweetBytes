@@ -13,11 +13,7 @@ function Header() {
         <Link to="/shop">Shop</Link>
         <Link to="/cart">Cart</Link>
 
-        {user ? (
-          <span>Hi, {user.name}!</span>
-        ) : (
-          <Link to="/account">Login</Link>
-        )}
+        {user ? <span>Hi, {user.name}!</span> : <Link to="/login">Login</Link>}
       </div>
     </header>
   );
