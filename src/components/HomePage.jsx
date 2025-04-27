@@ -4,7 +4,7 @@ function HomePage() {
       <h1>Sweet Bytes</h1>
       <p>Sweeten your day, one byte at a time!</p>
       <img
-        src="/images/donuts-banner.jpg"
+        src="/images/donuts.jpeg"
         alt="Donuts Banner"
         className="home-banner"
       />

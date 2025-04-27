@@ -10,7 +10,6 @@ import HomePage from "./components/HomePage";
 import ShoppingPage from "./components/ShoppingPage";
 import ItemPage from "./components/ItemPage";
 import Header from "./components/Header";
-import HomeHeader from "./components/HomeHeader";
 import Footer from "./components/Footer";
 import "./index.css";
 
@@ -30,25 +29,14 @@ function App() {
 
   return (
     <Router>
-      <PageLayout itemsData={itemsData} />
-    </Router>
-  );
-}
-
-function PageLayout({ itemsData }) {
-  const location = useLocation();
-  const isHome = location.pathname === "/";
-
-  return (
-    <>
-      {isHome ? <HomeHeader /> : <Header />}
+      <Header /> {}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/shop" element={<ShoppingPage itemsData={itemsData} />} />
         <Route path="/item/:id" element={<ItemPage itemsData={itemsData} />} />
       </Routes>
       <Footer />
-    </>
+    </Router>
   );
 }
 

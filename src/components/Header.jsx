@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 function Header() {
+  const [user, setUser] = useState(null);
+
   return (
     <header className="site-header">
       <div className="header-left">
@@ -8,7 +11,13 @@ function Header() {
       </div>
       <div className="header-right">
         <Link to="/shop">Shop</Link>
-        <Link to="/account">Account</Link>
+        <Link to="/cart">Cart</Link>
+
+        {user ? (
+          <span>Hi, {user.name}!</span>
+        ) : (
+          <Link to="/account">Login</Link>
+        )}
       </div>
     </header>
   );
