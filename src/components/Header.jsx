@@ -1,8 +1,32 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 
 function Header() {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
+
+  const [isAuth, setIsAuth] = useState(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/api/protected-data", {
+          credentials: "include",
+        });
+
+        if (res.status === 200) {
+          setIsAuth(true); // User is authenticated
+        } else {
+          setIsAuth(false); // User is not authenticated
+        }
+      } catch (error) {
+        console.error("Error checking authentication", error);
+        setIsAuth(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   return (
     <header className="site-header">
@@ -10,12 +34,12 @@ function Header() {
         <Link to="/">SweetBytes</Link>
       </div>
       <div className="header-right">
-        <Link to="/shop">Shop</Link>
-        <Link to="/cart">Cart</Link>
-
-        {user ? <span>Hi, {user.name}!</span> : <Link to="/login">Login</Link>}
+        {<Link to="/shop">Shop</Link>}
+        {isAuth && <Link to="/cart">Cart</Link>}
         <Link to="/locations">Locations</Link>
+        {!isAuth && <Link to="/login">Login</Link>}
       </div>
+      
     </header>
   );
 }
