@@ -24,7 +24,7 @@ const register = async (customerID, name, email, phone, password) => {
         await db.query(ins_query, [customerID, name, email, phone, hash]);
         const fullNameNoSpaces = name.replace(/\s+/g, '').toLowerCase();
         await db.query(`CREATE USER '${fullNameNoSpaces}'@'%' IDENTIFIED BY '${password}'`);
-        await db.query(`GRANT ROLE customer_role TO '${fullNameNoSpaces}'@'%'`);
+        await db.query(`GRANT customer_role TO '${fullNameNoSpaces}'@'%'`);
         const viewCustDetails = `
         CREATE VIEW \`${fullNameNoSpaces}_view_cust_details\` AS
         SELECT * FROM Customer
@@ -39,7 +39,8 @@ const register = async (customerID, name, email, phone, password) => {
         await db.query(viewReviews, [customerID]);
         const viewOrderDetails = `
         CREATE VIEW \`${fullNameNoSpaces}_view_order_details\` AS
-        SELECT o.*, od.*, i.*
+        SELECT o.OrderID, o.OrderDate, o.CustomerID, o.Price AS Total_Price, o.StoreID, 
+        od.ItemID, i.ItemName, i.Picture, i.Price AS Item_Price, od.Quantity
         FROM CustomerOrder o
         INNER JOIN OrderDetails od ON o.OrderID = od.OrderID
         INNER JOIN Item i ON od.ItemID = i.ItemID

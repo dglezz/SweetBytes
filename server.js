@@ -26,7 +26,10 @@ app.use(
 );
 
 // Allow resource sharing (allow calls to backend from certain URLs)
-app.use(cors({ origin: "http://localhost:5173" })); //Frontend URL
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true 
+})); //Frontend URL
 
 // Gets basic item info for all items
 app.get("/api/getAllItems", async (req, res) => {
@@ -67,16 +70,16 @@ app.post("/api/signup", async (req, res) => {
   }
 });
 
-app.post("/api/login", async (req, res) => {
-  const { customerID, password } = req.body;
+// app.post("/api/login", async (req, res) => {
+//   const { customerID, password } = req.body;
 
-  try {
-    const result = await login(customerID, password);
-    res.status(200).json(result);
-  } catch (err) {
-    res.status(401).json({ error: err.message });
-  }
-});
+//   try {
+//     const result = await login(customerID, password);
+//     res.status(200).json(result);
+//   } catch (err) {
+//     res.status(401).json({ error: err.message });
+//   }
+// });
 
 app.get("/api/items/:id", async (req, res) => {
   const itemId = req.params.id;
@@ -89,19 +92,19 @@ app.get("/api/items/:id", async (req, res) => {
   }
 });
 
-// // Login endpoint
-// app.post("/api/login", async (req, res) => {
-//   const { customerID, password } = req.body;
+// Login endpoint
+app.post("/api/login", async (req, res) => {
+  const { customerID, password } = req.body;
 
-//   try {
-//     const loginResponse = await login(customerID, password);
+  try {
+    const loginResponse = await login(customerID, password);
 
-//     req.session.user = customerID;
-//     res.send("Logged in successfully");
-//   } catch (err) {
-//     res.status(401).send("Invalid credentials");
-//   }
-// });
+    req.session.user = customerID;
+    res.send("Logged in successfully");
+  } catch (err) {
+    res.status(401).send("Invalid credentials");
+  }
+});
 
 // Check if the user is authenticated
 app.get("/api/protected-data", (req, res) => {
