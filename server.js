@@ -6,6 +6,7 @@ import db from "./db.js";
 import { getAllReviews } from "./review.mjs";
 import { getItemInfoAll } from "./item.mjs";
 import { register, login } from "./auth.mjs";
+import * as item from "./item.mjs"
 
 // Initialize an Express app
 const app = express();
@@ -109,94 +110,15 @@ app.get("/api/protected-data", (req, res) => {
 // transferring functions from the mjs files (We can't use those anymore) to be routes
 
 // ITEMS:
-// get Ingredient Info
-app.get("/api/getIngredientInfo", async (req, res) => {
-  try {
-    const ing_query = "call itemIngredients(?)";
-    const [rows] = await db.query(ing_query, [itemID]);
-    if (rows.length === 0) {
-      // return null;
-      res.json(null);
-    }
-    // return rows[0];
-    res.json(rows[0]);
-    // console.log("Items:", rows);
-    // res.json(rows); // Sending response to frontend
-  } catch (err) {
-    console.error("Query error:", err);
-    res
-      .status(500)
-      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
-  }
-});
 
-// get Nutritional info
-app.get("/api/getNutritionInfo", async (req, res) => {
+app.get("/api/items/:id", async (req, res) => {
+  const itemId = req.params.id;
   try {
-    const nutr_query = "SELECT * FROM NutritionalInfo WHERE ItemID = ?";
-    const [rows] = await db.query(nutr_query, [itemID]);
-    if (rows.length === 0) {
-      // return null;
-      res.json(null);
-    }
-    // return rows[0];
-    res.json(rows[0]);
-  } catch (err) {
-    console.error("Query error:", err);
-    res
-      .status(500)
-      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
-  }
-});
-
-// Gets basic Item info - Name and Price
-app.get("/api/getBasicItemInfo", async (req, res) => {
-  try {
-    const i_query = "SELECT * FROM Item WHERE ItemID = ?";
-    const [rows] = await db.query(i_query, [itemID]);
-    if (rows.length === 0) {
-      // return null;
-      res.json(null);
-    }
-    // return rows[0];
-    res.json(rows[0]);
-  } catch (err) {
-    console.error("Query error:", err);
-    res
-      .status(500)
-      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
-  }
-});
-
-// Gets item info + ingredients + nutrional info + reviews
-app.get("/api/getExtendedItemInfo", async (req, res) => {
-  try {
-    const itemInfo = await getItemInfo(itemID);
-    if (!itemInfo) {
-      // return null;
-      res.json(null);
-    }
-
-    const ingredients = await ingredientInfo(itemID);
-    const nutr = await nutrInfo(itemID);
-    const rev = await getItemReviews(itemID);
-    // return {
-    //   ...itemInfo,
-    //   ingredients: ingredients,
-    //   nutrInfo: nutr,
-    //   reviews: rev,
-    // };
-    res.json({
-      ...itemInfo,
-      ingredients: ingredients,
-      nutrInfo: nutr,
-      reviews: rev,
-    });
-  } catch (err) {
-    console.error("Query error:", err);
-    res
-      .status(500)
-      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
+    const itemData = await getItemInfoAll(itemId);
+    res.json(itemData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error retrieving item details");
   }
 });
 
