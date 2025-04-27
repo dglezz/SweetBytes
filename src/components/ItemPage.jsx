@@ -28,7 +28,7 @@ function ItemPage({ addToCart }) {
         <img src={`/images/${item.Picture}`} alt={item.ItemName} />
         <div className="item-info">
           <h2>{item.ItemName}</h2>
-          <p>Stock: {item.Stock ?? "N/A"}</p>
+
           <p>
             <strong>Price: ${parseFloat(item.Price).toFixed(2)}</strong>
           </p>
@@ -43,9 +43,9 @@ function ItemPage({ addToCart }) {
           {item.nutrInfo ? (
             <>
               <p>Calories: {item.nutrInfo.Calories}</p>
-              <p>Fat: {item.nutrInfo.Fat}g</p>
-              <p>Carbs: {item.nutrInfo.Carbs}g</p>
-              <p>Protein: {item.nutrInfo.Protein}g</p>
+              <p>Fat: {item.nutrInfo.Fat}</p>
+              <p>Carbs: {item.nutrInfo.Carbs}</p>
+              <p>Protein: {item.nutrInfo.Protein}</p>
             </>
           ) : (
             <p>Nutrition info not available</p>
