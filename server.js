@@ -8,6 +8,7 @@ import { getItemInfoAll } from "./item.mjs";
 import { register, login } from "./auth.mjs";
 import * as item from "./item.mjs"
 import * as order from "./order.mjs"
+import * as cust from "./customer.mjs"
 
 // Initialize an Express app
 const app = express();
@@ -55,6 +56,8 @@ app.get("/api/getReviews", async (req, res) => {
   }
 });
 
+// AUTH
+// User signup
 app.post("/api/signup", async (req, res) => {
   const { customerID, name, email, phone, password } = req.body;
   try {
@@ -67,28 +70,6 @@ app.post("/api/signup", async (req, res) => {
     console.error("Signup error:", error);
 
     res.status(500).json({ message: "Signup failed." });
-  }
-});
-
-// app.post("/api/login", async (req, res) => {
-//   const { customerID, password } = req.body;
-
-//   try {
-//     const result = await login(customerID, password);
-//     res.status(200).json(result);
-//   } catch (err) {
-//     res.status(401).json({ error: err.message });
-//   }
-// });
-
-app.get("/api/items/:id", async (req, res) => {
-  const itemId = req.params.id;
-  try {
-    const itemData = await getItemInfoAll(itemId);
-    res.json(itemData);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error retrieving item details");
   }
 });
 
@@ -115,8 +96,6 @@ app.get("/api/protected-data", (req, res) => {
   }
 });
 
-// transferring functions from the mjs files (We can't use those anymore) to be routes
-
 // ITEMS:
 
 app.get("/api/items/:id", async (req, res) => {
@@ -129,6 +108,7 @@ app.get("/api/items/:id", async (req, res) => {
     res.status(500).send("Error retrieving item details");
   }
 });
+
 
 // Gets items in stock
 app.get("/api/getItemsInStock", async (req, res) => {
@@ -151,20 +131,12 @@ app.get("/api/getItemsInStock", async (req, res) => {
 
 // ORDER:
 // creates a new order
-app.get("/api/getCreateOrder", async (req, res) => {
+app.post("/api/createOrder", async (req, res) => {
   try {
-    const orderID = await generateOrderID();
-    const date = new Date();
-    const o_query = `INSERT INTO CustomerOrder (OrderID, OrderDate, CustomerID, Price, StoreID)
-    VALUES (?, ?, ?, ?, ?)`;
-    await db.query(o_query, [orderID, date, customerID, 0.0, storeID]);
-    // return {
-    //     "message": "Order Created",
-    //     "orderID": orderID
-    // }
+    const result = await order.createOrder(req.session.user, req.session.storeID)
+    req.session.orderID = result["orderID"]
     res.json({
-      message: "Order Created",
-      orderID: orderID,
+      result: result
     });
   } catch (err) {
     console.error("Query error:", err);
@@ -175,43 +147,11 @@ app.get("/api/getCreateOrder", async (req, res) => {
 });
 
 // updates an order - pass in the current quantity of an item (not how it has changed)
-app.get("/api/getUpdateOrder", async (req, res) => {
+app.post("/api/updateOrder", async (req, res) => {
   try {
-    const o_query = `SELECT * FROM CustomerOrder WHERE OrderID = ?`;
-    const [rows] = await db.query(o_query, [orderID]);
-    if (rows.length === 0) {
-      throw { message: "Order does not exist" };
-    }
-
-    const od_query = `SELECT * FROM OrderDetails WHERE OrderID = ? AND ItemID = ?`;
-    const [od_rows] = await db.query(od_query, [orderID, itemID]);
-
-    try {
-      // if this item is not already a part of the order
-      if (od_rows.length === 0) {
-        const item_query = `INSERT INTO OrderDetails (OrderID, ItemID, Quantity)
-        VALUES (?, ?, ?)`;
-        await db.query(item_query, [orderID, itemID, quantity]);
-      }
-
-      // if this item is already in order
-      else {
-        const item_query = `UPDATE OrderDetails SET Quantity = ?
-            WHERE OrderID = ? AND ItemID = ?`;
-        await db.query(item_query, [quantity, orderID, itemID]);
-      }
-
-      // return {message: `Order ${orderID} was updated`}
-      res.json({ message: `Order ${orderID} was updated` });
-    } catch (err) {
-      console.log(err);
-
-      if (err.errno === 3819) {
-        throw { message: "Not enough inventory" };
-      }
-
-      throw { message: "Database Error" };
-    }
+      const {orderID, quantity} = req.body
+      const result = await order.updateOrder(orderID, req.session.user, quantity)
+      res.json({ message: result });
   } catch (err) {
     console.error("Query error:", err);
     res
@@ -221,23 +161,11 @@ app.get("/api/getUpdateOrder", async (req, res) => {
 });
 
 // delete an item in an order
-app.get("/api/deleteItemInOrder", async (req, res) => {
+app.post("/api/deleteItemInOrder", async (req, res) => {
   try {
-    const o_query = `SELECT * FROM OrderDetails WHERE OrderID = ? AND ItemID = ?`;
-    const [rows] = await db.query(o_query, [orderID, itemID]);
-    if (rows.length === 0) {
-      throw { message: "Order/Item does not exist" };
-    }
-
-    try {
-      const d_query = `DELETE FROM OrderDetails WHERE OrderID = ? AND ItemID = ?`;
-      await db.query(d_query, [orderID, itemID]);
-      // return {message: `Item ${itemID} deleted from Order ${orderID}`}
-      res.json({ message: `Item ${itemID} deleted from Order ${orderID}` });
-    } catch (err) {
-      console.log(err);
-      throw { message: err };
-    }
+    const {orderID, itemID} = req.body
+    const result = order.deleteItemInOrder(orderID, itemID)
+    res.json({ result });
   } catch (err) {
     console.error("Query error:", err);
     res
@@ -245,6 +173,69 @@ app.get("/api/deleteItemInOrder", async (req, res) => {
       .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
   }
 });
+
+// get all items in an order
+app.get("/api/order/items", async (req, res) => {
+  const orderID = req.session.orderID;
+
+  try {
+    const items = await order.getAllItemsInOrder(orderID);
+
+    if (items.length === 0) {
+      return res.status(404).json({ message: "No items found for this order." });
+    }
+
+    res.json(items);
+  } catch (error) {
+    console.error("Error fetching order items:", error);
+    res.status(500).json({ message: "Error retrieving items for the order." });
+  }
+});
+
+//get all orders by a user
+app.get("api/user/orders", async (req, res) => {
+  const customerID = req.session.user
+
+  try {
+    const orders = await order.getOrdersByCustomer(customerID)
+
+    res.json(orders)
+  } catch (error) {
+    console.error("Error fetching user orders", error)
+    res.status(500).json({message: "Error retrieving user orders"})
+  }
+})
+
+// CUSTOMER
+// Get customer info
+app.get("/api/getUserInfo"), async (req, res) => {
+  const customerID = req.session.user
+
+  try {
+    const result = cust.getCustomerInfo(customerID)
+
+    res.json(result)
+  } catch (error) {
+    console.error("Error Fetching User Info", error)
+    res.status(500).json({message: "Error retrieving user info"})
+  }
+}
+
+// Get all customer info
+app.get("/api/getAllUserInfo"), async (req, res) => {
+  const customerID = req.session.user
+
+  try {
+    const result = cust.getAllCustomerInfo(customerID)
+
+    res.json(result)
+  } catch (error) {
+    console.error("Error Fetching User Info All", error)
+    res.status(500).json({message: "Error retrieving user info all"})
+  }
+}
+
+
 
 // get all the stores 
 app.get("/api/getAllStores", async (req, res) => {
