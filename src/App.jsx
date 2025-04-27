@@ -12,6 +12,8 @@ import CartPage from "./components/CartPage";
 import ItemPage from "./components/ItemPage";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import LoginPage from "./components/LoginPage";
+import ProfilePage from "./components/ProfilePage";
 import "./index.css";
 import ProtectedRoute from "./components/ProtectedRoutes";
 
