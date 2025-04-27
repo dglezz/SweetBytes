@@ -21,8 +21,8 @@ function HomePage() {
       <h1>Sweet Bytes</h1>
       <p>Sweeten your day, one byte at a time!</p>
       <img
-        src="/images/donuts.jpeg"
-        alt="Donuts Banner"
+        src="/images/Sweet_Bytes.jpg"
+        alt="Sweet Bytes Banner"
         className="home-banner"
       />
       <h2 style={{ marginTop: "40px" }}>Read what our customers had to say!</h2>

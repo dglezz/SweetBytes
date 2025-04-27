@@ -9,7 +9,7 @@ function ItemPage() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/item/${id}`)
+      .get(`http://localhost:8080/api/items/${id}`)
       .then((response) => {
         setItem(response.data);
       })

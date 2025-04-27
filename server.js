@@ -3,6 +3,7 @@ import cors from "cors";
 import bcrypt from "bcrypt";
 import db from "./db.js";
 import { getAllReviews } from "./review.mjs";
+import { getItemInfoAll } from "./item.mjs";
 
 // Initialize an Express app
 const app = express();
@@ -31,6 +32,17 @@ app.get("/api/getReviews", async (req, res) => {
   } catch (error) {
     console.error("Error fetching reviews:", error);
     res.status(500).json({ error: "Failed to fetch reviews" });
+  }
+});
+
+app.get("/api/items/:id", async (req, res) => {
+  const itemId = req.params.id;
+  try {
+    const itemData = await getItemInfoAll(itemId);
+    res.json(itemData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error retrieving item details");
   }
 });
 // Start the server
