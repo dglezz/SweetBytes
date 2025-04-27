@@ -248,37 +248,10 @@ app.get("/api/getAllUserInfo", async (req, res) => {
   try {
     const result = cust.getAllCustomerInfo(customerID);
 
-    res.json(result[0]);
+    res.json(result);
   } catch (error) {
     console.error("Error Fetching User Info All", error);
     res.status(500).json({ message: "Error retrieving user info all" });
-  }
-});
-
-app.post("/api/updateUserInfo", async (req, res) => {
-  const customerID = req.session.user;
-
-  const { email, phone } = req.body;
-
-  try {
-    await cust.updateCustomerInfo(customerID, email, phone);
-    res.status(200).json({ message: "Profile updated successfully" });
-  } catch (error) {
-    console.error("Error updating user info", error);
-    res.status(500).json({ message: "Failed to update user info" });
-  }
-});
-
-app.delete("/api/deleteUser", async (req, res) => {
-  const customerID = req.session.user;
-
-  try {
-    await cust.deleteCustomer(customerID);
-    req.session.destroy();
-    res.status(200).json({ message: "Profile deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting user", error);
-    res.status(500).json({ message: "Failed to delete user" });
   }
 });
 
