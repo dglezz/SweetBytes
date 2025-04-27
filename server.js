@@ -1,13 +1,27 @@
 import express from "express";
 import cors from "cors";
+import session from "express-session";
 import bcrypt from "bcrypt";
 import db from "./db.js";
 import { getAllReviews } from "./review.mjs";
 import { getItemInfoAll } from "./item.mjs";
+import { login } from "./auth.mjs";
 
 // Initialize an Express app
 const app = express();
 app.use(express.json());
+
+// Use session middleware
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false,
+    },
+  })
+);
 
 // Allow resource sharing (allow calls to backend from certain URLs)
 app.use(cors({ origin: "http://localhost:5173" })); //Frontend URL
@@ -45,6 +59,33 @@ app.get("/api/items/:id", async (req, res) => {
     res.status(500).send("Error retrieving item details");
   }
 });
+
+
+// Login endpoint
+app.post("/api/login", async (req, res) => {
+  const { customerID, password } = req.body;
+
+  try {
+    const loginResponse = await login(customerID, password);
+
+    req.session.user = customerID;
+    res.send("Logged in successfully");
+  } catch (err) {
+    res.status(401).send("Invalid credentials");
+  }
+});
+
+
+// Check if the user is authenticated
+app.get("/api/protected-data", (req, res) => {
+  if (req.session && req.session.user) {
+    res.status(200).send("User is authenticated");
+  } else {
+    res.status(401).send("User is not authenticated");
+  }
+});
+
+
 // Start the server
 const port = 8080;
 app.listen(port, () => {

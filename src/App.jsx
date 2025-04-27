@@ -31,9 +31,21 @@ function App() {
     <Router>
       <Header /> {}
       <Routes>
+        {/* Public Routes*/}
         <Route path="/" element={<HomePage />} />
         <Route path="/shop" element={<ShoppingPage itemsData={itemsData} />} />
         <Route path="/item/:id" element={<ItemPage itemsData={itemsData} />} />
+        <Route path="/login" element={<LoginPage />} />
+
+        {/* Private Routes: */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       <Footer />
     </Router>
