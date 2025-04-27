@@ -246,6 +246,20 @@ app.get("/api/deleteItemInOrder", async (req, res) => {
   }
 });
 
+// get all the stores 
+app.get("/api/getAllStores", async (req, res) => {
+  try{
+    const l_query = `SELECT * FROM Store`
+    const [rows] = await db.query(l_query)
+    res.json(rows);
+  } catch (err) {
+    console.error("Query error:", err);
+    res
+      .status(500)
+      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
+  }
+});
+
 // Start the server
 const port = 8080;
 app.listen(port, () => {

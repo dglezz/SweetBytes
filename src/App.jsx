@@ -14,6 +14,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
+import LocationsPage from "./components/LocationsPage";
 import ProfilePage from "./components/ProfilePage";
 import "./index.css";
 import ProtectedRoute from "./components/ProtectedRoutes";
@@ -76,6 +77,7 @@ function App() {
         <Route path="/cart" element={<CartPage cartItems={cartItems} />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/locations" element={<LocationsPage />} />
 
         {/* Private Routes: */}
         <Route

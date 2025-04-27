@@ -14,6 +14,7 @@ function Header() {
         <Link to="/cart">Cart</Link>
 
         {user ? <span>Hi, {user.name}!</span> : <Link to="/login">Login</Link>}
+        <Link to="/locations">Locations</Link>
       </div>
     </header>
   );
