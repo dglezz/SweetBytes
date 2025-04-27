@@ -51,15 +51,18 @@ app.get("/api/getReviews", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch reviews" });
   }
 });
-
 app.post("/api/signup", async (req, res) => {
-  const { customerID, name, email, phone, password } = req.body;
-
+  const { username, name, email, phone, password } = req.body;
   try {
-    const result = await register(customerID, name, email, phone, password);
-    res.status(201).json(result);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.log("Received signup request:", req.body); // 👈 ADD THIS
+
+    await register(username, name, email, phone, password);
+
+    res.json({ message: "Signup successful!" });
+  } catch (error) {
+    console.error("Signup error:", error); // 👈 ADD THIS
+
+    res.status(500).json({ message: "Signup failed." });
   }
 });
 
@@ -85,19 +88,19 @@ app.get("/api/items/:id", async (req, res) => {
   }
 });
 
-// Login endpoint
-app.post("/api/login", async (req, res) => {
-  const { customerID, password } = req.body;
+// // Login endpoint
+// app.post("/api/login", async (req, res) => {
+//   const { customerID, password } = req.body;
 
-  try {
-    const loginResponse = await login(customerID, password);
+//   try {
+//     const loginResponse = await login(customerID, password);
 
-    req.session.user = customerID;
-    res.send("Logged in successfully");
-  } catch (err) {
-    res.status(401).send("Invalid credentials");
-  }
-});
+//     req.session.user = customerID;
+//     res.send("Logged in successfully");
+//   } catch (err) {
+//     res.status(401).send("Invalid credentials");
+//   }
+// });
 
 // Check if the user is authenticated
 app.get("/api/protected-data", (req, res) => {

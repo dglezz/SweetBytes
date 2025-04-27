@@ -19,7 +19,6 @@ function SignupPage() {
       [e.target.name]: e.target.value,
     }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -32,12 +31,13 @@ function SignupPage() {
         body: JSON.stringify(formData),
       });
 
+      const data = await res.json();
+
       if (res.status === 201) {
         alert("Signup successful! Please log in.");
         navigate("/login");
       } else {
-        const errorData = await res.json();
-        alert(errorData.error || "Signup failed. Try again.");
+        alert(data.message || "Signup failed. Try again.");
       }
     } catch (error) {
       console.error("Error during signup:", error);
