@@ -2,7 +2,7 @@ import db from "./db.js"
 
 const getAllStores = async () => {
     const l_query = `SELECT * FROM Store`
-    const [rows] = db.query(l_query)
+    const [rows] = await db.query(l_query)
     return rows
 }
 
