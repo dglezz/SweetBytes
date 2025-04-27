@@ -7,6 +7,7 @@ import { getAllReviews } from "./review.mjs";
 import { getItemInfoAll } from "./item.mjs";
 import { register, login } from "./auth.mjs";
 import * as item from "./item.mjs"
+import * as order from "./order.mjs"
 
 // Initialize an Express app
 const app = express();
@@ -124,47 +125,24 @@ app.get("/api/items/:id", async (req, res) => {
 
 // Gets items in stock
 app.get("/api/getItemsInStock", async (req, res) => {
+  const storeID = req.session.storeID
+
+  if (!storeID) {
+      return res.status(401).json({ message: 'No store selected' });
+  }
+
   try {
-    const query = `
-    SELECT ItemID, Name, Price, Quantity
-    FROM customer_view_items_per_store
-    WHERE StoreID = ?`;
-    const [rows] = await db.query(query, [sID]);
-    if (rows.length == 0) {
-      // return null;
-      res.json(null);
-    }
-    // return rows;
-    res.json(rows);
+      const items = await item.getItemsInStock(storeID)
+      res.json(items);
   } catch (err) {
-    console.error("Query error:", err);
-    res
+      console.error("Query error:", err);
+      res
       .status(500)
       .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
   }
 });
 
 // ORDER:
-// creates an OrderID - if its already in use, it will call itself and try to create another one (idk if the logic for this will work)
-app.get("/api/getCreateOrderID", async (req, res) => {
-  try {
-    const curr_id = "O" + Math.random().toString(36).slice(2, 8).toUpperCase();
-    const dup_query = "SELECT * FROM CustomerOrder WHERE OrderID = ?";
-    const [rows] = await db.query(dup_query, [curr_id]);
-    if (rows.length === 0) {
-      // return curr_id
-      res.json(curr_id);
-    }
-    // return generateOrderID();
-    res.json(generateOrderID());
-  } catch (err) {
-    console.error("Query error:", err);
-    res
-      .status(500)
-      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
-  }
-});
-
 // creates a new order
 app.get("/api/getCreateOrder", async (req, res) => {
   try {
