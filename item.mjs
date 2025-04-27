@@ -60,5 +60,6 @@ const getItemsInStock = async() => {
 export {
     getItemInfo,
     getItemInfoAll,
+    getItemsInStock,
     getAllItems
 }
