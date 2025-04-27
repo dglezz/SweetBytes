@@ -1,3 +1,4 @@
+import "../LoginPage.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -26,22 +27,25 @@ function LoginPage() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleLogin}>
-        <input
-          type="text"
-          placeholder="Customer ID"
-          value={customerID}
-          onChange={(e) => setCustomerID(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Login</button>
-      </form>
+    <div className="login-container">
+      <div className="login-box">
+        <h2>Log In</h2>
+        <form onSubmit={handleLogin}>
+          <input
+            type="text"
+            placeholder="Customer ID"
+            value={customerID}
+            onChange={(e) => setCustomerID(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button type="submit">Log In</button>
+        </form>
+      </div>
     </div>
   );
 }
