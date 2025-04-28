@@ -246,6 +246,58 @@ body {
   margin: 0.5rem 0;
 }
 
+/* Add Review Section */
+.add-review-section {
+  margin-top: 3rem;
+  padding: 2rem;
+  background: #ffe6f0;
+  border-radius: 12px;
+  border: 1px solid #ffb3c6;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.add-review-section h4 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #ff4081;
+}
+
+.add-review-section textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.add-review-section select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-left: 10px;
+  font-size: 1rem;
+}
+
+.submit-review-button {
+  margin-top: 1rem;
+  padding: 10px 20px;
+  background-color: #ff69b4;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-review-button:hover {
+  background-color: #ff85c1;
+}
+
 /* CART PAGE */
 
 .cart-page {
