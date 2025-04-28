@@ -10,6 +10,7 @@ function ItemPage({ addToCart }) {
   const [reviewContent, setReviewContent] = useState("");
   const [starRating, setStarRating] = useState(5);
   const [submitting, setSubmitting] = useState(false);
+  const [adding, setAdding] = useState(false);
 
   const fetchItem = () => {
     axios
@@ -59,6 +60,33 @@ function ItemPage({ addToCart }) {
     }
   };
 
+  const handleAddToCart = async () => {
+    if (!item) return;
+
+    const orderID = sessionStorage.getItem("orderID") || "default_order";
+
+    try {
+      setAdding(true);
+      const response = await axios.post(
+        "http://localhost:8080/api/updateOrder",
+        {
+          orderID: orderID,
+          itemID: item.ItemID,
+          quantity: 1,
+        },
+        { withCredentials: true }
+      );
+
+      console.log("Order updated:", response.data);
+      addToCart(item);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      alert("Failed to add item to cart.");
+    } finally {
+      setAdding(false);
+    }
+  };
+
   if (error) return <h2>{error}</h2>;
   if (!item) return <h2>Loading...</h2>;
 
@@ -74,9 +102,10 @@ function ItemPage({ addToCart }) {
           </p>
           <button
             className="add-to-cart-button"
-            onClick={() => addToCart(item)}
+            onClick={handleAddToCart}
+            disabled={adding}
           >
-            Add to Cart
+            {adding ? "Adding..." : "Add to Cart"}
           </button>
 
           <h3>Nutritional Information</h3>
