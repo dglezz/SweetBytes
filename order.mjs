@@ -17,7 +17,7 @@ const createOrder = async (customerID, storeID) => {
     const date = new Date().toISOString().slice(0,19).replace('T', ' ');
     const o_query = `INSERT INTO CustomerOrder (OrderID, OrderDate, CustomerID, Price, StoreID)
     VALUES (?, ?, ?, ?, ?)`
-    console.log("Current date being inserted: ", date)
+    console.log("Current date being inserted: ", date);
     await db.query(o_query, [orderID, date, customerID, 0.00, storeID]);
     return {
         "message": "Order Created",
