@@ -43,6 +43,11 @@ body {
   font-weight: bold;
 }
 
+footer a {
+  text-decoration: none;
+  color: inherit;
+}
+
 /* Home page */
 .home {
   text-align: center;
