@@ -14,7 +14,7 @@ const generateOrderID = async() => {
 // creates a new order **
 const createOrder = async (customerID, storeID) => {
     const orderID = await generateOrderID();
-    const date = new Date();
+    const date = new Date().toISOString().slice(0,19).replace('T', ' ');
     const o_query = `INSERT INTO CustomerOrder (OrderID, OrderDate, CustomerID, Price, StoreID)
     VALUES (?, ?, ?, ?, ?)`
     await db.query(o_query, [orderID, date, customerID, 0.00, storeID]);
