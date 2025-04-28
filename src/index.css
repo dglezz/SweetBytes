@@ -445,3 +445,54 @@ footer a {
 .create-order-button:hover {
   background-color: #ff85c1;
 }
+
+/* LOCATIONS PAGE */
+.locations-page {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.locations-page h1 {
+  font-size: 2.5rem;
+  color: #ff69b4;
+  margin-bottom: 0.5rem;
+}
+
+.locations-page p {
+  font-size: 1.2rem;
+  margin-bottom: 3rem;
+  color: #666;
+}
+
+.locations-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.location-card {
+  background: #fff0f5;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.location-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.location-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.location-card p {
+  font-size: 1rem;
+  color: #555;
+}
