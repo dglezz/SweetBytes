@@ -7,7 +7,11 @@ function ItemPage({ addToCart }) {
   const [item, setItem] = useState(null);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const [reviewContent, setReviewContent] = useState("");
+  const [starRating, setStarRating] = useState(5);
+  const [submitting, setSubmitting] = useState(false);
+
+  const fetchItem = () => {
     axios
       .get(`http://localhost:8080/api/items/${id}`)
       .then((response) => {
@@ -17,7 +21,37 @@ function ItemPage({ addToCart }) {
         console.error("Error fetching item:", error);
         setError("Failed to load item");
       });
+  };
+
+  useEffect(() => {
+    fetchItem();
   }, [id]);
+
+  const handleReviewSubmit = async () => {
+    if (!reviewContent.trim()) {
+      alert("Review cannot be empty.");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      await axios.post(`http://localhost:8080/api/review`, {
+        itemID: id, // capital ID to match server
+        content: reviewContent,
+        starRating: starRating,
+      });
+
+      alert("Review submitted!");
+      setReviewContent("");
+      setStarRating(5);
+      fetchItem(); // refresh reviews
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      alert("Failed to submit review.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (error) return <h2>{error}</h2>;
   if (!item) return <h2>Loading...</h2>;
@@ -66,19 +100,53 @@ function ItemPage({ addToCart }) {
 
       <div className="reviews">
         <h3>Reviews</h3>
-        {item.reviews.length > 0 ? (
+        {item.reviews && item.reviews.length > 0 ? (
           item.reviews.map((rev, i) => (
             <div key={i} className="review-card">
               <p>
                 <strong>{rev.CustomerID || "User"}</strong>
               </p>
-              <p>{"★".repeat(rev.StarRating)}</p>
+              <p>{"★".repeat(Math.round(rev.StarRating))}</p> {/* safer now */}
               <p>{rev.Content}</p>
             </div>
           ))
         ) : (
           <p>No reviews yet.</p>
         )}
+
+        {/* New Add Review Section */}
+        <div className="add-review-section">
+          <h4>Add a Review</h4>
+          <textarea
+            value={reviewContent}
+            onChange={(e) => setReviewContent(e.target.value)}
+            placeholder="Write your review..."
+            rows={4}
+            cols={50}
+          />
+          <br />
+          <label>
+            Star Rating:
+            <select
+              value={starRating}
+              onChange={(e) => setStarRating(Number(e.target.value))}
+            >
+              {[1, 2, 3, 4, 5].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
+          <br />
+          <button
+            onClick={handleReviewSubmit}
+            className="submit-review-button"
+            disabled={submitting}
+          >
+            {submitting ? "Submitting..." : "Submit Review"}
+          </button>
+        </div>
       </div>
     </div>
   );
