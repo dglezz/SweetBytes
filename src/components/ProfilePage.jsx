@@ -90,7 +90,7 @@ const ProfilePage = () => {
       <div className="profile-box">
         <div className="profile-icon">👤</div>
         <h1 className="profile-name">{name || "Loading..."}</h1>
-
+  
         <div className="profile-field">
           <label>Email:</label>
           <input
@@ -99,7 +99,7 @@ const ProfilePage = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-
+  
         <div className="profile-field">
           <label>Phone Number:</label>
           <input
@@ -108,47 +108,53 @@ const ProfilePage = () => {
             onChange={(e) => setPhone(e.target.value)}
           />
         </div>
-
+  
         <div className="profile-buttons">
           <button onClick={handleSave}>Save Changes</button>
           <button onClick={handleClear}>Clear All</button>
           <button onClick={handleDelete}>Delete Profile</button>
         </div>
       </div>
+  
       <div className="profile-extra-info">
-        <h2>Your Reviews</h2>
-        {reviews.length === 0 ? (
-          <p>No reviews yet.</p>
-        ) : (
-          <ul>
-            {reviews.map((review) => (
-              <li key={review.reviewID}>
-                <strong>Product:</strong> {review.ItemName || "Unknown Product"}<br/>
-                <strong>Rating:</strong> {review.StarRating}/5<br/>
-                <strong>Comment:</strong> {review.Content}
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <h2>Your Orders</h2>
-        {orders.length === 0 ? (
-          <p>No orders yet.</p>
-        ) : (
-          <ul>
-            {orders.map((order) => (
-              <li key={order.orderID}>
-                <strong>Order ID:</strong> {order.OrderID}<br/>
-                <strong>Order Date:</strong> {order.OrderDate.slice(0,10)}<br/>
-                <strong>Total Price:</strong> ${order.Price}<br/>
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className="info-columns">
+          <div className="reviews-section">
+            <h2>Your Reviews</h2>
+            {reviews.length === 0 ? (
+              <p>No reviews yet.</p>
+            ) : (
+              <ul>
+                {reviews.map((review) => (
+                  <li key={review.reviewID}>
+                    <strong>Product:</strong> {review.ItemName || "Unknown Product"}<br />
+                    <strong>Rating:</strong> {review.StarRating}/5<br />
+                    <strong>Comment:</strong> {review.Content}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+  
+          <div className="orders-section">
+            <h2>Your Orders</h2>
+            {orders.length === 0 ? (
+              <p>No orders yet.</p>
+            ) : (
+              <ul>
+                {orders.map((order) => (
+                  <li key={order.orderID}>
+                    <strong>Order ID:</strong> {order.OrderID}<br />
+                    <strong>Order Date:</strong> {order.OrderDate.slice(0, 10)}<br />
+                    <strong>Total Price:</strong> ${order.Price}<br />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
       </div>
     </div>
-    
-  );
+  );  
 };
 
 export default ProfilePage;

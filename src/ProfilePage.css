@@ -61,3 +61,45 @@
 .profile-buttons button:hover {
   background-color: #ffe6f0;
 }
+
+.profile-extra-info {
+  margin-top: 40px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.info-columns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.reviews-section, .orders-section {
+  width: 80%;
+  background-color: #ffcbe0;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.08);
+}
+
+.reviews-section h2, .orders-section h2 {
+  margin-top: 0;
+}
+
+.reviews-section ul, .orders-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.reviews-section li, .orders-section li {
+  margin-bottom: 15px;
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.6;
+}
+
+.reviews-section li strong, .orders-section li strong {
+  color: #222;
+}
