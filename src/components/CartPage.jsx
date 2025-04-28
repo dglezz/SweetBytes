@@ -9,18 +9,17 @@ function CartPage({ updateCartItem }) {
   // Fetch all items in the cart from the backend
   useEffect(() => {
     const fetchCartItems = async () => {
-      const orderID = sessionStorage.getItem("orderID") || "default_order"; // Use the actual order ID from session/cookies
+      const orderID = sessionStorage.getItem("orderID") || "default_order";
 
       try {
         setLoading(true);
         
-        // Fetch items from backend API
         const response = await axios.get("http://localhost:8080/api/order/items", {
           params: { orderID },
-          withCredentials: true, // To include session information (like orderID)
+          withCredentials: true, 
         });
 
-        setCartItems(response.data); // Set fetched items to state
+        setCartItems(response.data);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching cart items:", err);
@@ -30,15 +29,15 @@ function CartPage({ updateCartItem }) {
     };
 
     fetchCartItems();
-  }, []); // This effect runs once when the component mounts
+  }, []); 
 
   // Function to handle quantity change
   const handleQuantityChange = async (item, delta) => {
     const newQuantity = item.Quantity + delta;
   
-    if (newQuantity <= 0) return; // Prevent decreasing quantity below 1
+    if (newQuantity <= 0) return;
   
-    const orderID = sessionStorage.getItem("orderID") || "default_order"; // Retrieve the orderID from session or use a default
+    const orderID = sessionStorage.getItem("orderID") || "default_order";
   
     try {
       setLoading(true);
@@ -62,7 +61,7 @@ function CartPage({ updateCartItem }) {
         { withCredentials: true }
       );
       
-      setCartItems(cartResponse.data);  // Update the frontend cart state with the latest data
+      setCartItems(cartResponse.data);
   
       setLoading(false);
     } catch (err) {
@@ -74,12 +73,12 @@ function CartPage({ updateCartItem }) {
 
   // Function to handle deleting an item from the cart
   const handleDeleteItem = async (itemID) => {
-    const orderID = sessionStorage.getItem("orderID") || "default_order"; // Use the actual order ID
+    const orderID = sessionStorage.getItem("orderID") || "default_order";
 
     try {
       setLoading(true);
 
-      // Send a request to delete the item from the order
+     
       const response = await axios.post(
         "http://localhost:8080/api/deleteItemInOrder",
         {
@@ -91,16 +90,16 @@ function CartPage({ updateCartItem }) {
 
       console.log("Item deleted:", response.data);
 
-      // Call the updateCartItem function to remove the item from frontend state
-      updateCartItem(itemID, 0);  // This should remove the item from the cart state
+      
+      updateCartItem(itemID, 0);
 
-      // Re-fetch the cart items from the backend to get the latest data
+      
       const cartResponse = await axios.get(
         "http://localhost:8080/api/order/items",
         { withCredentials: true }
       );
       
-      setCartItems(cartResponse.data);  // Update the frontend cart state with the latest data
+      setCartItems(cartResponse.data); 
   
       setLoading(false);
 
@@ -131,13 +130,13 @@ function CartPage({ updateCartItem }) {
               <div className="quantity-controls">
                 <button
                   onClick={() => handleQuantityChange(item, -1)}  // Decrease quantity
-                  disabled={loading}  // Disable button while loading
+                  disabled={loading}
                 >
                   -
                 </button>
                 <button
                   onClick={() => handleQuantityChange(item, 1)}  // Increase quantity
-                  disabled={loading}  // Disable button while loading
+                  disabled={loading} 
                 >
                   +
                 </button>
@@ -146,8 +145,8 @@ function CartPage({ updateCartItem }) {
               {/* Delete Button */}
               <button
                 className="delete-item-button"
-                onClick={() => handleDeleteItem(item.ItemID)} // Call the handleDeleteItem function
-                disabled={loading}  // Disable button while loading
+                onClick={() => handleDeleteItem(item.ItemID)} 
+                disabled={loading}
               >
                 Remove
               </button>

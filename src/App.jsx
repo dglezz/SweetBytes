@@ -73,20 +73,10 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
-          <Route
-            path="/item/:id"
-            element={<ItemPage itemsData={itemsData} addToCart={addToCart} />}
-          />
-          <Route path="/cart" element={<CartPage cartItems={cartItems} updateCartItem={updateCartItem} />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/locations" element={<LocationsPage />} />
           <Route path="/menu" element={<MenuPage />} />
-          <Route path="/select-location" element={<SelectLocation />} />
-          <Route
-            path="/shopping"
-            element={<ShoppingPage itemsData={itemsData} addToCart={addToCart} />}
-          />
           <Route path="/menu-item/:id" element={<MenuItemPage />} />
 
           {/* Private Routes */}
@@ -106,6 +96,24 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/select-location" 
+          element={
+            <ProtectedRoute>
+              <SelectLocation />
+            </ProtectedRoute>
+          } />
+          <Route
+            path="/item/:id"
+            element={<ProtectedRoute>
+              <ItemPage itemsData={itemsData} addToCart={addToCart} />
+            </ProtectedRoute>}
+          />
+          <Route 
+          path="/cart" element={
+          <ProtectedRoute>
+            <CartPage cartItems={cartItems} updateCartItem={updateCartItem} />
+          </ProtectedRoute>} />
+
         </Routes>
         <Footer />
       </Router>

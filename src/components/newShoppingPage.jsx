@@ -8,29 +8,29 @@ function ShoppingPage({ addToCart }) {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Fetch items from the backend when the component is mounted
   useEffect(() => {
     async function fetchItems() {
       try {
         const response = await axios.get("http://localhost:8080/api/getItemsInStock", {
-          withCredentials: true, // To include session information (like storeID)
+          withCredentials: true,
         });
 
         if (response.data !== null) {
-          setItems(response.data);  // Set fetched items to state
+          setItems(response.data);
+          console.log(response.data)
         } else {
           setItems([]);
         }
-        setLoading(false);  // Set loading to false
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching items:", err);
-        setError("Failed to load items");  // Set error if the request fails
-        setLoading(false);  // Stop loading even if there's an error
+        setError("Failed to load items");
+        setLoading(false); 
       }
     }
 
     fetchItems();
-  }, []); // This effect runs only once when the component mounts
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -42,19 +42,17 @@ function ShoppingPage({ addToCart }) {
 
   // Add to cart and update the order on the backend
   const handleAddToCart = async (item) => {
-    // Assuming you have a way to track the order ID (perhaps from the session)
-    const orderID = sessionStorage.getItem("orderID") || "default_order";  // You may want to store this in session/cookies
+    const orderID = sessionStorage.getItem("orderID") || "default_order";
 
-    // Update the order in the backend
     try {
       const response = await axios.post("http://localhost:8080/api/updateOrder", {
-        orderID: orderID,  // Use the actual order ID from the session or elsewhere
+        orderID: orderID,
         itemID: item.ItemID,
-        quantity: 1,  // Add 1 item to the cart for now (this can be dynamic)
+        quantity: 1,
       }, { withCredentials: true });
 
       console.log("Order updated:", response.data);
-      addToCart(item);  // Update the cart in frontend state as well
+      addToCart(item);
     } catch (err) {
       console.error("Error updating order:", err);
     }
@@ -64,7 +62,10 @@ function ShoppingPage({ addToCart }) {
     <div className="shopping-page">
       <h2 className="shopping-title">All Items</h2>
       <div className="shopping-grid">
-        {items.map((item) => (
+        
+        {items.length === 0 ? (
+        <p>This store is sold out of everything!</p>
+        ) : (items.map((item) => (
           <div key={item.ItemID} className="shopping-item">
             <Link to={`/item/${item.ItemID}`} className="item-link">
               <img src={`/images/${item.Picture}`} alt={item.ItemName} />
@@ -73,13 +74,22 @@ function ShoppingPage({ addToCart }) {
             </Link>
             <button
               className="add-to-cart-button"
-              onClick={() => handleAddToCart(item)}  // Add to cart and update order
+              onClick={() => handleAddToCart(item)}
             >
               Add to Cart
             </button>
-          </div>
+          </div>)
         ))}
       </div>
+    <br></br>
+    <br></br>
+    <div>
+        <Link to='/select-location'>
+        <button classname="add-to-cart-button">
+            Pick a New Location
+        </button>
+        </Link>
+    </div>
     </div>
   );
 }

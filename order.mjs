@@ -88,7 +88,7 @@ const deleteItemInOrder = async (orderID, itemID) => {
 
 // returns all items in an order
 const getAllItemsInOrder = async (orderID) => {
-    const o_query = `SELECT i.ItemID, i.ItemName, i.Price, od.Quantity FROM CustomerOrder o
+    const o_query = `SELECT i.ItemID, i.ItemName, i.Price, od.Quantity, i.Picture FROM CustomerOrder o
     INNER JOIN OrderDetails od
     ON o.OrderID = od.OrderID
     INNER JOIN Item i
