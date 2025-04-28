@@ -72,10 +72,10 @@ const ProfilePage = () => {
 
         const data = await response.json();
         if (response.ok) {
-          alert(data.message || "Profile deleted successfully!");
+          alert(data.message || "Account deleted successfully!");
           window.location.href = "/"; // Redirect to home after delete
         } else {
-          alert(data.message || "Failed to delete profile.");
+          alert(data.message || "Failed to delete account.");
         }
       } catch (error) {
         console.error("Error deleting profile:", error);
@@ -112,7 +112,7 @@ const ProfilePage = () => {
         <div className="profile-buttons">
           <button onClick={handleSave}>Save Changes</button>
           <button onClick={handleClear}>Clear All</button>
-          <button onClick={handleDelete}>Delete Profile</button>
+          <button onClick={handleDelete}>Delete Account</button>
         </div>
       </div>
   

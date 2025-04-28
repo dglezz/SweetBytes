@@ -404,3 +404,18 @@ const port = 8080;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+
+//LOGOUT 
+// API to log out a user
+app.post("/api/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Logout error:", err);
+      res.status(500).json({ message: "Logout failed" });
+    } else {
+      res.clearCookie("connect.sid"); // clear the session cookie (default name for express-session)
+      res.json({ message: "Logged out successfully" });
+    }
+  });
+});

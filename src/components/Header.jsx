@@ -28,6 +28,31 @@ function Header() {
     checkAuth();
   }, []);
 
+
+  // const handleLogout = async () => {
+  //   try {
+  //     await axios.post("http://localhost:8080/api/logout");
+  //     setUser(null); // clear user from local state
+  //     navigate("/login"); // redirect to login page
+  //   } catch (error) {
+  //     console.error("Logout failed:", error);
+  //   }
+  // };
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("http://localhost:8080/api/logout");
+      setUser(null);
+      setLogoutMessage("You have been logged out."); // show message
+      setTimeout(() => {
+        setLogoutMessage(""); // clear after a few seconds (optional)
+        navigate("/login");   // redirect after message
+      }, 2000); // 2 seconds delay
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <header className="site-header">
       <div className="header-left">
@@ -40,6 +65,9 @@ function Header() {
         <Link to="/locations">Locations</Link>
         {isAuth==true && <Link to ="/profile">Profile</Link>}
         {isAuth==false && <Link to ="/login">Login</Link>}
+        {isAuth==true && <button onClick={handleLogout} className="logout-button">
+              Logout
+          </button>}
       </div>
       
     </header>
