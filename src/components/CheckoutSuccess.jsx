@@ -1,3 +1,4 @@
+import "./CheckoutSuccess.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function CheckoutSuccessPage() {
@@ -16,7 +17,6 @@ function CheckoutSuccessPage() {
       <h1>Thank You for Your Order!</h1>
       <p>Order Number: <strong>{orderID}</strong></p>
       <p>Total Paid: <strong>${parseFloat(price).toFixed(2)}</strong></p>
-
       <button className="new-order-button" onClick={handleNewOrder}>
         Place New Order
       </button>
