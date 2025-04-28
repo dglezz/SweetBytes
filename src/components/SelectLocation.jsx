@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"
 
 function SelectLocation() {
   const [stores, setStores] = useState([]);
@@ -27,7 +28,15 @@ function SelectLocation() {
       return;
     }
 
-    // Save storeID to session
+    // // Save storeID to session
+    // await axios.post(`http://localhost:8080/api/setStore`, {
+    //   storeID: selectedStore,
+    // },
+    // {
+    //   credentials: "include",
+    // })
+
+    // Now create order
     await fetch(`http://localhost:8080/api/setStore/${selectedStore}`, {
       method: "POST",
       credentials: "include",

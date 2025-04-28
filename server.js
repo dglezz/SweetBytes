@@ -36,6 +36,11 @@ app.use(
   })
 ); //Frontend URL
 
+app.use((req, res, next) => {
+  console.log("Session at the start of the request:", req.session);
+  next();
+});
+
 // Gets basic item info for all items
 app.get("/api/getAllItems", async (req, res) => {
   try {
@@ -85,7 +90,8 @@ app.post("/api/login", async (req, res) => {
     const loginResponse = await login(customerID, password);
 
     req.session.user = customerID;
-    console.log(req.session.user)
+    req.session.save()
+    console.log("User logged in:", req.session.user);
     res.send("Logged in successfully");
   } catch (err) {
     res.status(401).send("Invalid credentials");
@@ -149,9 +155,12 @@ app.get("/api/getItemsInStock", async (req, res) => {
 // creates a new order
 app.post("/api/createOrder", async (req, res) => {
   try {
+    console.log("Before Order:", req.session)
+    const storeID = req.session.storeID
+    console.log("Order:", storeID, req.session.user)
     const result = await order.createOrder(
       req.session.user,
-      req.session.storeID
+      storeID
     );
     req.session.orderID = result["orderID"];
     res.json({
@@ -329,10 +338,14 @@ app.delete("/api/review/:revID", async (req, res) => {
 // STORE
 
 // set a store location
-app.post("/api/setStore", async (req, res) => {
+app.post("/api/setStore/:storeID", async (req, res) => {
   try {
-    const {storeID} = req.params
+    console.log("Before", req.session)
+    const { storeID } = req.params;
     req.session.storeID = storeID
+    req.session.save()
+    console.log(req.session)
+    console.log(req.session.storeID)
     res.json({ message: "Signup successful!" });
   } catch (error) {
     console.error("Error setting store:", error)
