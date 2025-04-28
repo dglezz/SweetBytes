@@ -1,6 +1,34 @@
 import { Link } from "react-router-dom";
+import { useOrder } from "./OrderContext"; 
 
 function ShoppingPage({ itemsData, addToCart }) {
+  const { orderInfo } = useOrder(); 
+
+  const handleAddToCart = async (item) => {
+    addToCart(item); // 1. Add it to frontend cart
+
+    // 2. Send update to backend
+    if (orderInfo && orderInfo.orderId) {
+      try {
+        await fetch("http://localhost:8080/api/updateOrder", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", 
+          body: JSON.stringify({
+            orderID: orderInfo.orderId,
+            quantity: 1, // we need to figure out how to get this value 
+          }),
+        });
+      } catch (err) {
+        console.error("Failed to update order:", err);
+      }
+    } else {
+      console.error("No orderID found - cannot update order");
+    }
+  };
+
   return (
     <div className="shopping-page">
       <h2 className="shopping-title">All Items</h2>
@@ -17,7 +45,7 @@ function ShoppingPage({ itemsData, addToCart }) {
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                addToCart(item);
+                handleAddToCart(item); 
               }}
             >
               Add to Cart

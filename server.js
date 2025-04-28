@@ -176,19 +176,18 @@ app.post("/api/createOrder", async (req, res) => {
   }
 });
 
-// updates an order - pass in the current quantity of an item (not how it has changed)
+// updates an order - pass in the current quantity of an item (not how it has changed) DON'T CHANGE THIS ONE
 app.post("/api/updateOrder", async (req, res) => {
   try {
-    const { orderID, quantity } = req.body;
-    const result = await order.updateOrder(orderID, req.session.user, quantity);
+    const { orderID, itemID, quantity } = req.body;
+    const result = await order.updateOrder(orderID, itemID, req.session.user, quantity);
     res.json({ message: result });
   } catch (err) {
     console.error("Query error:", err);
-    res
-      .status(500)
-      .json({ error: "Database query failed", details: err.message }); // Sending error response to frontend
+    res.status(500).json({ error: "Database query failed", details: err.message });
   }
 });
+
 
 // delete an item in an order
 app.post("/api/deleteItemInOrder", async (req, res) => {

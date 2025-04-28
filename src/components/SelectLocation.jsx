@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useOrder } from "./OrderContext";
 import axios from "axios"
 
 function SelectLocation() {
   const [stores, setStores] = useState([]);
   const [selectedStore, setSelectedStore] = useState("");
   const navigate = useNavigate();
+  const { setOrderInfo } = useOrder(); 
 
   useEffect(() => {
     async function fetchStores() {
@@ -42,12 +44,15 @@ function SelectLocation() {
       credentials: "include",
     });
 
-    await fetch(`http://localhost:8080/api/createOrder`, {
+    const response = await fetch(`http://localhost:8080/api/createOrder`, {
       method: "POST",
       credentials: "include",
     });
 
-    navigate("/shopping");
+    const orderData = await response.json();
+    setOrderInfo(orderData); 
+
+    navigate("/shop"); 
   };
 
   return (
