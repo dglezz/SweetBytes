@@ -246,9 +246,9 @@ app.get("/api/getAllUserInfo", async (req, res) => {
   const customerID = req.session.user;
 
   try {
-    const result = cust.getAllCustomerInfo(customerID);
+    const result = await cust.getAllCustomerInfo(customerID);
 
-    res.json(result[0]);
+    res.json(result);
   } catch (error) {
     console.error("Error Fetching User Info All", error);
     res.status(500).json({ message: "Error retrieving user info all" });
@@ -326,6 +326,19 @@ app.delete("/api/review/:revID", async (req, res) => {
 });
 
 // STORE
+
+// set a store location
+app.post("/api/setStore", async (req, res) => {
+  try {
+    const {storeID} = req.params
+    req.session.storeID = storeID
+    res.json({ message: "Signup successful!" });
+  } catch (error) {
+    console.error("Error setting store:", error)
+    res.status(500).json({message: "Error setting store"})
+  }
+  
+})
 
 // get all the stores
 app.get("/api/getAllStores", async (req, res) => {
