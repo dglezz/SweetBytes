@@ -60,7 +60,7 @@ const getAllItems = async () => {
 // Gets items in stock **
 const getItemsInStock = async (sID) => {
   const query = `
-  SELECT ItemID, Name, Price, Quantity
+  SELECT ItemID, ItemName, Price, Quantity
   FROM customer_view_items_per_store
   WHERE StoreID = ?`
   const [rows] = await db.query(query, [sID]);

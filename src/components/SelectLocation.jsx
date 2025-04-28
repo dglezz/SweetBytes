@@ -44,10 +44,16 @@ function SelectLocation() {
       credentials: "include",
     });
 
+    localStorage.setItem('storeID', selectedStore)
+
     const response = await fetch(`http://localhost:8080/api/createOrder`, {
       method: "POST",
       credentials: "include",
     });
+
+    console.log("This is the resoponse:")
+    console.log(response)
+    localStorage.setItem('orderID', response['OrderID'])
 
     const orderData = await response.json();
     setOrderInfo(orderData); 

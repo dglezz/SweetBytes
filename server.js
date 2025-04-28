@@ -36,6 +36,7 @@ app.use(
   })
 ); //Frontend URL
 
+
 app.use((req, res, next) => {
   console.log("Session at the start of the request:", req.session);
   next();
@@ -134,6 +135,7 @@ app.get("api/allItems", async (req, res) => {
 
 // Gets items in stock
 app.get("/api/getItemsInStock", async (req, res) => {
+  console.log("Getting Items: ", req.session)
   const storeID = req.session.storeID;
 
   if (!storeID) {
@@ -165,8 +167,9 @@ app.post("/api/createOrder", async (req, res) => {
     req.session.orderID = result["orderID"];
     console.log("After:", req.session)
     req.session.save()
-    res.json({
+    return res.json({
       result: result,
+      orderID: result["orderID"]
     });
   } catch (err) {
     console.error("Query error:", err);
@@ -179,8 +182,9 @@ app.post("/api/createOrder", async (req, res) => {
 // updates an order - pass in the current quantity of an item (not how it has changed) DON'T CHANGE THIS ONE
 app.post("/api/updateOrder", async (req, res) => {
   try {
-    const { orderID, itemID, quantity } = req.body;
-    const result = await order.updateOrder(orderID, itemID, req.session.user, quantity);
+    const { itemID, quantity } = req.body;
+    const orderID = req.session.orderID
+    const result = await order.updateOrder(orderID, itemID, quantity);
     res.json({ message: result });
   } catch (err) {
     console.error("Query error:", err);
@@ -192,8 +196,10 @@ app.post("/api/updateOrder", async (req, res) => {
 // delete an item in an order
 app.post("/api/deleteItemInOrder", async (req, res) => {
   try {
-    const { orderID, itemID } = req.body;
-    const result = order.deleteItemInOrder(orderID, itemID);
+    const {itemID } = req.body;
+    const orderID = req.session.orderID
+    console.log("deleted!", orderID, itemID)
+    const result = await order.deleteItemInOrder(orderID, itemID);
     res.json({ result });
   } catch (err) {
     console.error("Query error:", err);

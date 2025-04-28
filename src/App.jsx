@@ -6,7 +6,7 @@ import {
 import { useState, useEffect } from "react";
 import axios from "axios";
 import HomePage from "./components/HomePage";
-import ShoppingPage from "./components/ShoppingPage";
+import ShoppingPage from "./components/newShoppingPage";
 import CartPage from "./components/CartPage";
 import ItemPage from "./components/ItemPage";
 import Header from "./components/Header";
@@ -77,7 +77,7 @@ function App() {
             path="/item/:id"
             element={<ItemPage itemsData={itemsData} addToCart={addToCart} />}
           />
-          <Route path="/cart" element={<CartPage cartItems={cartItems} />} />
+          <Route path="/cart" element={<CartPage cartItems={cartItems} updateCartItem={updateCartItem} />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/locations" element={<LocationsPage />} />

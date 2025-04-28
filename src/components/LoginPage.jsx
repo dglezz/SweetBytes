@@ -20,7 +20,9 @@ function LoginPage() {
     });
 
     if (res.status === 200) {
+      localStorage.setItem('customerID', customerID)
       navigate("/select-location");
+      window.location.reload()
     } else {
       alert("Invalid credentials");
     }
