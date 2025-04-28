@@ -37,7 +37,7 @@ function Header() {
         {<Link to="/shop">Shop</Link>}
         {isAuth && <Link to="/cart">Cart</Link>}
         <Link to="/locations">Locations</Link>
-        {!isAuth && <Link to="/login">Login</Link>}
+        {isAuth==false && <Link to="/login">Login</Link>}
         {isAuth && <Link to ="/profile">Profile</Link>}
       </div>
       
