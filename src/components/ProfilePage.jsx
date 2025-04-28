@@ -138,9 +138,9 @@ const ProfilePage = () => {
           <ul>
             {orders.map((order) => (
               <li key={order.orderID}>
-                <strong>Order Date:</strong> {order.orderDate ? new Date(order.orderDate).toLocaleDateString() : "Date not known"}<br/>
-                <strong>Total Price:</strong> ${order.totalPrice}<br/>
-                <strong>Status:</strong> {order.status}
+                <strong>Order ID:</strong> {order.OrderID}<br/>
+                <strong>Order Date:</strong> {order.OrderDate}<br/>
+                <strong>Total Price:</strong> ${order.Price}<br/>
               </li>
             ))}
           </ul>

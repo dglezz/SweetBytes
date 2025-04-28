@@ -163,6 +163,8 @@ app.post("/api/createOrder", async (req, res) => {
       storeID
     );
     req.session.orderID = result["orderID"];
+    console.log("After:", req.session)
+    req.session.save()
     res.json({
       result: result,
     });
