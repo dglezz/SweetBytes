@@ -20,6 +20,7 @@ const getAllCustomerInfo = async (customerID) => {
   }
   const ords = await getOrdersByCustomer(customerID);
   const revs = await getReviewsByCustomer(customerID);
+  console.log(revs)
   return {
     ...custInfo,
     orders: ords,

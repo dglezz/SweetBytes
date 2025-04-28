@@ -17,6 +17,7 @@ const addReview = async (itemID, customerID, content, starRating) => {
     VALUES (?, ?, ?, ?, ?)`;
   try {
     await db.query(r_query, [revID, itemID, customerID, content, starRating]);
+    console.log(customerID)
     return {
       message: "Review Added",
       reviewID: revID,
@@ -50,7 +51,10 @@ const deleteReview = async (revID, customerID) => {
 };
 
 const getReviewsByCustomer = async (customerID) => {
-  const r_query = "SELECT * FROM Review WHERE CustomerID = ?";
+  const r_query = `SELECT r.*, i.ItemName FROM Review r
+  INNER JOIN Item i
+  ON r.ItemID = i.ItemID
+  WHERE CustomerID = ?`;
   const [rows] = await db.query(r_query, [customerID]);
   return rows;
 };

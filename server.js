@@ -85,6 +85,7 @@ app.post("/api/login", async (req, res) => {
     const loginResponse = await login(customerID, password);
 
     req.session.user = customerID;
+    console.log(req.session.user)
     res.send("Logged in successfully");
   } catch (err) {
     res.status(401).send("Invalid credentials");

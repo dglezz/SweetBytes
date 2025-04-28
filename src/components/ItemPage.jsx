@@ -39,6 +39,9 @@ function ItemPage({ addToCart }) {
         itemID: id, // capital ID to match server
         content: reviewContent,
         starRating: starRating,
+      },
+      {
+        withCredentials: true
       });
 
       alert("Review submitted!");
@@ -106,7 +109,7 @@ function ItemPage({ addToCart }) {
               <p>
                 <strong>{rev.CustomerID || "User"}</strong>
               </p>
-              <p>{"★".repeat(Math.round(rev.StarRating))}</p> {/* safer now */}
+              <p>{"★".repeat(Math.round(rev.StarRating))}</p>
               <p>{rev.Content}</p>
             </div>
           ))
@@ -114,7 +117,6 @@ function ItemPage({ addToCart }) {
           <p>No reviews yet.</p>
         )}
 
-        {/* New Add Review Section */}
         <div className="add-review-section">
           <h4>Add a Review</h4>
           <textarea

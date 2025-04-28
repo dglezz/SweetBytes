@@ -5,6 +5,8 @@ const ProfilePage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [reviews, setReviews] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -19,6 +21,9 @@ const ProfilePage = () => {
         setName(data.Name);
         setEmail(data.Email);
         setPhone(data.Phone_Number);
+        setReviews(data.reviews || []);
+        console.log(data)
+        setOrders(data.orders || []);
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -110,7 +115,39 @@ const ProfilePage = () => {
           <button onClick={handleDelete}>Delete Profile</button>
         </div>
       </div>
+      <div className="profile-extra-info">
+        <h2>Your Reviews</h2>
+        {reviews.length === 0 ? (
+          <p>No reviews yet.</p>
+        ) : (
+          <ul>
+            {reviews.map((review) => (
+              <li key={review.reviewID}>
+                <strong>Product:</strong> {review.ItemName || "Unknown Product"}<br/>
+                <strong>Rating:</strong> {review.StarRating}/5<br/>
+                <strong>Comment:</strong> {review.Content}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <h2>Your Orders</h2>
+        {orders.length === 0 ? (
+          <p>No orders yet.</p>
+        ) : (
+          <ul>
+            {orders.map((order) => (
+              <li key={order.orderID}>
+                <strong>Order Date:</strong> {new Date(order.orderDate).toLocaleDateString()}<br/>
+                <strong>Total Price:</strong> ${order.totalPrice}<br/>
+                <strong>Status:</strong> {order.status}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
+    
   );
 };
 
