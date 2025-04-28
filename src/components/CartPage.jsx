@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./RemoveButton.css"
 
 function CartPage({ updateCartItem }) {
   const navigate = useNavigate();
@@ -181,7 +182,7 @@ function CartPage({ updateCartItem }) {
 
               {/* Delete Button */}
               <button
-                className="delete-item-button"
+                className="remove-button"
                 onClick={() => handleDeleteItem(item.ItemID)} 
                 disabled={loading}
               >
