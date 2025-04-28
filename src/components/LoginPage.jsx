@@ -20,8 +20,7 @@ function LoginPage() {
     });
 
     if (res.status === 200) {
-      navigate("/profile");
-      window.location.reload();
+      navigate("/select-location");
     } else {
       alert("Invalid credentials");
     }
