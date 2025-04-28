@@ -6,6 +6,7 @@ function ShoppingPage({ addToCart }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,28 +59,49 @@ function ShoppingPage({ addToCart }) {
     }
   };
 
+  // Filter items based on search query
+  const filteredItems = items.filter((item) =>
+    item.ItemName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="shopping-page">
       <h2 className="shopping-title">All Items</h2>
+
+    {/* Search bar */}
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search for an item..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      <br></br>
+      <br></br>
+
       <div className="shopping-grid">
         
-        {items.length === 0 ? (
-        <p>This store is sold out of everything!</p>
-        ) : (items.map((item) => (
-          <div key={item.ItemID} className="shopping-item">
-            <Link to={`/item/${item.ItemID}`} className="item-link">
-              <img src={`/images/${item.Picture}`} alt={item.ItemName} />
-              <h3>{item.ItemName}</h3>
-              <p>${parseFloat(item.Price).toFixed(2)}</p>
-            </Link>
-            <button
-              className="add-to-cart-button"
-              onClick={() => handleAddToCart(item)}
-            >
-              Add to Cart
-            </button>
-          </div>)
-        ))}
+      {filteredItems.length === 0 ? (
+          <p>No items match your search.</p>
+        ) : (
+          filteredItems.map((item) => (
+            <div key={item.ItemID} className="shopping-item">
+              <Link to={`/item/${item.ItemID}`} className="item-link">
+                <img src={`/images/${item.Picture}`} alt={item.ItemName} />
+                <h3>{item.ItemName}</h3>
+                <p>${parseFloat(item.Price).toFixed(2)}</p>
+              </Link>
+              <button
+                className="add-to-cart-button"
+                onClick={() => handleAddToCart(item)}
+              >
+                Add to Cart
+              </button>
+            </div>
+          ))
+        )}
       </div>
     <br></br>
     <br></br>
