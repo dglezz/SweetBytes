@@ -16,6 +16,7 @@ import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
 import LocationsPage from "./components/LocationsPage";
 import ProfilePage from "./components/ProfilePage";
+import SelectLocation from "./components/SelectLocation";
 import "./index.css";
 import ProtectedRoute from "./components/ProtectedRoutes";
 
@@ -78,13 +79,18 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/locations" element={<LocationsPage />} />
+        <Route path="/select-location" element={<SelectLocation />} />
+        <Route
+          path="/shopping"
+          element={<ShoppingPage itemsData={itemsData} addToCart={addToCart} />}
+        />
 
         {/* Private Routes: */}
         <Route
           path="/profile"
           element={
             <ProtectedRoute>
-            <ProfilePage />
+              <ProfilePage />
             </ProtectedRoute>
           }
         />
@@ -92,7 +98,7 @@ function App() {
           path="/shop"
           element={
             <ProtectedRoute>
-            <ShoppingPage itemsData={itemsData} addToCart={addToCart} />
+              <ShoppingPage itemsData={itemsData} addToCart={addToCart} />
             </ProtectedRoute>
           }
         />

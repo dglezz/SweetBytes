@@ -391,3 +391,52 @@ body {
 .quantity-controls button:hover {
   background-color: #ff85c1;
 }
+
+/* SELECTING LOCATIONS PAGE */
+/* SelectLocation Page */
+.select-location-page {
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.select-location-page h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #ff69b4;
+}
+
+.select-location-page select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ffb3c6;
+  border-radius: 10px;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  background-color: #fff0f5;
+  color: #333;
+}
+
+.select-location-page select:focus {
+  outline: none;
+  border-color: #ff69b4;
+}
+
+.create-order-button {
+  padding: 12px 24px;
+  background-color: #ff69b4;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.create-order-button:hover {
+  background-color: #ff85c1;
+}
