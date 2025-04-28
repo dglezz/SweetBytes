@@ -35,14 +35,17 @@ function ItemPage({ addToCart }) {
 
     try {
       setSubmitting(true);
-      await axios.post(`http://localhost:8080/api/review`, {
-        itemID: id, // capital ID to match server
-        content: reviewContent,
-        starRating: starRating,
-      },
-      {
-        withCredentials: true
-      });
+      await axios.post(
+        `http://localhost:8080/api/review`,
+        {
+          itemID: id, // capital ID to match server
+          content: reviewContent,
+          starRating: starRating,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       alert("Review submitted!");
       setReviewContent("");

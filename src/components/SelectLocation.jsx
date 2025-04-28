@@ -42,13 +42,11 @@ function SelectLocation() {
       credentials: "include",
     });
 
-    // Now create order
     await fetch(`http://localhost:8080/api/createOrder`, {
       method: "POST",
       credentials: "include",
     });
 
-    // Then navigate to shopping
     navigate("/shopping");
   };
 
