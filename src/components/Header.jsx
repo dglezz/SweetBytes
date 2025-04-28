@@ -34,6 +34,7 @@ function Header() {
         <Link to="/">SweetBytes</Link>
       </div>
       <div className="header-right">
+        {<Link to="/menu">Menu</Link>}
         {<Link to="/shop">Shop</Link>}
         {isAuth && <Link to="/cart">Cart</Link>}
         <Link to="/locations">Locations</Link>

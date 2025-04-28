@@ -1,6 +1,21 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-function Menu({ itemsData, addToCart }) {
+function MenuPage() {
+    const [itemsData, setItemsData] = useState([]);
+
+    useEffect(() => {
+        axios
+        .get("http://localhost:8080/api/getAllItems")
+        .then((response) => {
+            setItemsData(response.data);
+        })
+        .catch((error) => {
+            console.error("Error fetching items:", error);
+        });
+    }, []);
+
   return (
     <div className="shopping-page">
       <h2 className="shopping-title">All Items</h2>
@@ -12,21 +27,11 @@ function Menu({ itemsData, addToCart }) {
               <h3>{item.ItemName}</h3>
               <p>${parseFloat(item.Price).toFixed(2)}</p>
             </Link>
-            <button
-              className="add-to-cart-button"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                addToCart(item);
-              }}
-            >
-              Add to Cart
-            </button>
           </div>
         ))}
       </div>
     </div>
   );
-}
+};
 
-export default ShoppingPage;
+export default MenuPage;

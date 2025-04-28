@@ -16,6 +16,7 @@ import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
 import LocationsPage from "./components/LocationsPage";
 import ProfilePage from "./components/ProfilePage";
+import MenuPage from "./components/Menu"
 import "./index.css";
 import ProtectedRoute from "./components/ProtectedRoutes";
 
@@ -78,6 +79,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/locations" element={<LocationsPage />} />
+        <Route path="/menu" element={<MenuPage />} />
 
         {/* Private Routes: */}
         <Route
