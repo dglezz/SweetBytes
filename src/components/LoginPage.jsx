@@ -21,6 +21,7 @@ function LoginPage() {
 
     if (res.status === 200) {
       navigate("/profile");
+      window.location.reload();
     } else {
       alert("Invalid credentials");
     }
