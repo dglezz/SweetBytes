@@ -36,9 +36,9 @@ function Header() {
       <div className="header-right">
         {<Link to="/menu">Menu</Link>}
         {<Link to="/shop">Shop</Link>}
-        {<Link to="/cart">Cart</Link>}
+        {isAuth && <Link to="/cart">Cart</Link>}
         <Link to="/locations">Locations</Link>
-        {isAuth==false && <Link to="/login">Login</Link>}
+        {isAuth==true && <Link to ="/profile">Profile</Link>}
         {<Link to ="/profile">Profile</Link>}
       </div>
       
