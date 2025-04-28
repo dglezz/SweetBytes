@@ -1,0 +1,20 @@
+.search-bar {
+    padding: 10px;
+    width: 250px;
+    border: 2px solid #ff69b4;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-family: "Courier New", Courier, monospace;
+    letter-spacing: 0.5px;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s ease;
+    margin-top: 20px;
+  }
+  
+  .search-bar::placeholder {
+    color: #888;
+    font-family: "Courier New", Courier, monospace;
+    letter-spacing: 0.5px;
+  }
+  

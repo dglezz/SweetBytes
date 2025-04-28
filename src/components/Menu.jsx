@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "../MenuItemPage.css";
+import "./SearchBar.css";
 
 function MenuPage() {
   const [itemsData, setItemsData] = useState([]);
@@ -28,11 +29,12 @@ function MenuPage() {
       <h2 className="shopping-title">All Items</h2>
 
       {/* Search Bar */}
-      <div className="search-bar">
+      <div>
         <input
           type="text"
           placeholder="Search for an item..."
           value={searchQuery}
+          className="search-bar"
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>

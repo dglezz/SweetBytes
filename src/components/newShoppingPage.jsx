@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import "./SearchBar.css";
 
 function ShoppingPage({ addToCart }) {
   const [items, setItems] = useState([]);
@@ -69,11 +70,12 @@ function ShoppingPage({ addToCart }) {
       <h2 className="shopping-title">All Items</h2>
 
     {/* Search bar */}
-      <div className="search-bar">
+      <div>
         <input
           type="text"
           placeholder="Search for an item..."
           value={searchQuery}
+          className = "search-bar"
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
