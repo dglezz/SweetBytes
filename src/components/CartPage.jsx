@@ -5,31 +5,40 @@ function CartPage({ updateCartItem }) {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [orderInfo, setOrderInfo] = useState(null);
 
-  // Fetch all items in the cart from the backend
+  // Fetch cart items and order info
   useEffect(() => {
-    const fetchCartItems = async () => {
+    const fetchCartItemsAndOrderInfo = async () => {
       const orderID = sessionStorage.getItem("orderID") || "default_order";
 
       try {
         setLoading(true);
         
-        const response = await axios.get("http://localhost:8080/api/order/items", {
+        // Fetch cart items
+        const cartResponse = await axios.get("http://localhost:8080/api/order/items", {
           params: { orderID },
           withCredentials: true, 
         });
+        setCartItems(cartResponse.data);
 
-        setCartItems(response.data);
+        // Fetch order info (total price etc.)
+        const orderResponse = await axios.get("http://localhost:8080/api/orderInfo", {
+          withCredentials: true,
+        });
+        console.log(orderResponse)
+        setOrderInfo(orderResponse.data); // Save the order info
+
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching cart items:", err);
-        setError("Failed to load items.");
+        console.error("Error fetching cart items or order info:", err);
+        setError("Failed to load cart data.");
         setLoading(false);
       }
     };
 
-    fetchCartItems();
-  }, []); 
+    fetchCartItemsAndOrderInfo();
+  }, []);
 
   // Function to handle quantity change
   const handleQuantityChange = async (item, delta) => {
@@ -55,13 +64,7 @@ function CartPage({ updateCartItem }) {
   
       console.log("Order updated:", response.data);
   
-      // Re-fetch the cart items from the backend to get the latest data
-      const cartResponse = await axios.get(
-        "http://localhost:8080/api/order/items",
-        { withCredentials: true }
-      );
-      
-      setCartItems(cartResponse.data);
+      await refreshCartAndOrderInfo();
   
       setLoading(false);
     } catch (err) {
@@ -98,6 +101,8 @@ function CartPage({ updateCartItem }) {
         "http://localhost:8080/api/order/items",
         { withCredentials: true }
       );
+
+      await refreshCartAndOrderInfo();
       
       setCartItems(cartResponse.data); 
   
@@ -108,6 +113,27 @@ function CartPage({ updateCartItem }) {
       console.error("Error deleting item:", err);
       setError("Failed to delete item.");
       setLoading(false);
+    }
+  };
+
+  // Helper function to refresh cart items and order info
+  const refreshCartAndOrderInfo = async () => {
+    const orderID = sessionStorage.getItem("orderID") || "default_order";
+
+    try {
+      const cartResponse = await axios.get("http://localhost:8080/api/order/items", {
+        params: { orderID },
+        withCredentials: true,
+      });
+      setCartItems(cartResponse.data);
+
+      const orderResponse = await axios.get("http://localhost:8080/api/orderInfo", {
+        withCredentials: true,
+      });
+      setOrderInfo(orderResponse.data);
+
+    } catch (err) {
+      console.error("Error refreshing cart/order info:", err);
     }
   };
 
@@ -154,6 +180,15 @@ function CartPage({ updateCartItem }) {
           </div>
         ))
       )}
+
+      {/* Show order total */}
+      {orderInfo && (
+        <div className="order-summary">
+          <h2>Order Summary</h2>
+          <p>Total Price: ${cartItems.length === 0 ? "0.00" : parseFloat(orderInfo.Price).toFixed(2)}</p>
+        </div>
+      )}
+
       {cartItems.length > 0 && (
         <button className="checkout-button">Proceed to Checkout</button>
       )}

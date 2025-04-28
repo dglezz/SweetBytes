@@ -242,6 +242,20 @@ app.get("api/user/orders", async (req, res) => {
   }
 });
 
+// get order info
+app.get("/api/orderInfo", async (req, res) => {
+  const orderID = req.session.orderID
+  try {
+    const orderInfo = await order.getOrderInfo(orderID)
+    console.log(orderInfo)
+    res.json(orderInfo)
+  }
+  catch (error) {
+    console.error("Error getting item info:", error)
+    res.status(500).json({message: "Error: ", error})
+  }
+})
+
 // CUSTOMER
 // Get customer info
 app.get("/api/getUserInfo", async (req, res) => {

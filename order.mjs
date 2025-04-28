@@ -110,10 +110,19 @@ const getOrdersByCustomer = async (customerID) => {
     return rows
 }
 
+//get order info
+const getOrderInfo = async (orderID) => {
+    const o_query = `SELECT * FROM CustomerOrder WHERE OrderID = ?`
+    const [rows] = await db.query(o_query, [orderID])
+    if (rows.length === 0) { throw({message: `Order does not exist with OrderID: ${orderID}`}) }
+    return rows[0]
+}
+
 export {
     createOrder,
     updateOrder,
     deleteItemInOrder,
     getAllItemsInOrder,
-    getOrdersByCustomer
+    getOrdersByCustomer,
+    getOrderInfo
 }
