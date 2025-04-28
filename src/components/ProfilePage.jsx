@@ -18,7 +18,7 @@ const ProfilePage = () => {
         const data = await response.json();
         setName(data.Name);
         setEmail(data.Email);
-        setPhone(data.Phone);
+        setPhone(data.Phone_Number);
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
