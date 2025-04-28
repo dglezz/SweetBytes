@@ -17,7 +17,8 @@ import SignupPage from "./components/SignupPage";
 import LocationsPage from "./components/LocationsPage";
 import ProfilePage from "./components/ProfilePage";
 import SelectLocation from "./components/SelectLocation";
-import MenuPage from "./components/Menu"
+import MenuPage from "./components/Menu";
+import MenuItemPage from "./components/MenuItemPage";
 import "./index.css";
 import ProtectedRoute from "./components/ProtectedRoutes";
 
@@ -86,6 +87,7 @@ function App() {
           path="/shopping"
           element={<ShoppingPage itemsData={itemsData} addToCart={addToCart} />}
         />
+        <Route path="/menu-item/:id" element={<MenuItemPage />} />
 
         {/* Private Routes: */}
         <Route

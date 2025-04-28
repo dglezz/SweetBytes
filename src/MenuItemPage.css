@@ -1,0 +1,62 @@
+.menu-item-page {
+  padding: 2rem 4rem;
+}
+
+.item-top {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.item-top img {
+  width: 400px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-info h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+.reviews {
+  margin-top: 3rem;
+  width: 100%;
+}
+
+.reviews h3 {
+  margin-bottom: 1.5rem;
+  text-align: left;
+  padding-left: 2rem;
+}
+
+.review-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: flex-start; /* align to the left */
+  padding-left: 2rem;
+}
+
+.review-card {
+  background: #fff0f5; /* light pink background */
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 280px; /* control width to fit nicely in flex */
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
