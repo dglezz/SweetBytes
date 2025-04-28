@@ -94,8 +94,13 @@ const getAllItemsInOrder = async (orderID) => {
     INNER JOIN Item i
     ON od.ItemID = i.ItemID
     WHERE o.OrderID = ?`
-    const [rows] = await db.query(o_query, [orderID])
-    return rows
+    try {
+        const [rows] = await db.query(o_query, [orderID])
+        return rows
+    } catch (err) {
+        console.log("Order is blank or some other error")
+        return []
+    }
 }
 
 const getOrdersByCustomer = async (customerID) => {

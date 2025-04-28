@@ -217,9 +217,8 @@ app.get("/api/order/items", async (req, res) => {
     const items = await order.getAllItemsInOrder(orderID);
 
     if (items.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No items found for this order." });
+      console.log("No items in order")
+      return res.json([]);
     }
 
     res.json(items);
