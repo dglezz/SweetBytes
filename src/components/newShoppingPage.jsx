@@ -107,7 +107,7 @@ function ShoppingPage({ addToCart }) {
     <br></br>
     <div>
         <Link to='/select-location'>
-        <button classname="add-to-cart-button">
+        <button className="add-to-cart-button">
             Pick a New Location
         </button>
         </Link>

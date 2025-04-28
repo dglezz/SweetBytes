@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function CartPage({ updateCartItem }) {
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -137,6 +139,15 @@ function CartPage({ updateCartItem }) {
     }
   };
 
+  const handleProceedToCheckout = () => {
+    navigate("/checkout-success", {
+      state: {
+        orderID: orderInfo?.OrderID || "Unknown Order",
+        price: orderInfo?.Price || 0,
+      },
+    });
+  };
+
   return (
     <div className="cart-page">
       <h1>Shopping Cart</h1>
@@ -190,8 +201,11 @@ function CartPage({ updateCartItem }) {
       )}
 
       {cartItems.length > 0 && (
-        <button className="checkout-button">Proceed to Checkout</button>
+        <button className="checkout-button" onClick={handleProceedToCheckout}>
+          Proceed to Checkout
+        </button>
       )}
+
     </div>
   );
 }

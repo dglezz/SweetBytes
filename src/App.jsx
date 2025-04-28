@@ -19,7 +19,8 @@ import SelectLocation from "./components/SelectLocation";
 import MenuPage from "./components/Menu";
 import MenuItemPage from "./components/MenuItemPage";
 import ProtectedRoute from "./components/ProtectedRoutes";
-import { OrderProvider } from "./components/OrderContext"; // <-- ADDED
+import { OrderProvider } from "./components/OrderContext";
+import CheckoutSuccessPage from "./components/CheckoutSuccess"
 import "./index.css";
 
 function App() {
@@ -112,6 +113,11 @@ function App() {
           path="/cart" element={
           <ProtectedRoute>
             <CartPage cartItems={cartItems} updateCartItem={updateCartItem} />
+          </ProtectedRoute>} />
+          <Route 
+          path="/checkout-success" element={
+          <ProtectedRoute>
+            <CheckoutSuccessPage />
           </ProtectedRoute>} />
 
         </Routes>
