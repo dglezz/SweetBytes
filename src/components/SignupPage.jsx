@@ -34,7 +34,7 @@ function SignupPage() {
 
       const data = await res.json();
 
-      if (res.status === 201) {
+      if (res.status === 200) {
         alert("Signup successful! Please log in.");
         navigate("/login");
       } else {
