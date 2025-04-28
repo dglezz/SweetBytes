@@ -139,7 +139,7 @@ const ProfilePage = () => {
             {orders.map((order) => (
               <li key={order.orderID}>
                 <strong>Order ID:</strong> {order.OrderID}<br/>
-                <strong>Order Date:</strong> {order.OrderDate}<br/>
+                <strong>Order Date:</strong> {order.OrderDate.slice(0,10)}<br/>
                 <strong>Total Price:</strong> ${order.Price}<br/>
               </li>
             ))}
