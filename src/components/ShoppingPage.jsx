@@ -1,8 +1,26 @@
 import { Link } from "react-router-dom";
 import { useOrder } from "./OrderContext"; 
+import { useNavigate } from "react-router-dom";
+
 
 function ShoppingPage({ itemsData, addToCart }) {
   const { orderInfo } = useOrder(); 
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/protected-data")
+      .then(() => {
+        setIsAuthenticated(true);
+      })
+      .catch(() => {
+        setIsAuthenticated(false);
+        navigate("/login"); // Redirect if not authenticated
+      });
+  }, [navigate]);
+
 
   const handleAddToCart = async (item) => {
     addToCart(item); // 1. Add it to frontend cart

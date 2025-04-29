@@ -1,11 +1,17 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 
 function Header() {
   // const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   const [isAuth, setIsAuth] = useState(null);
+  const [logoutMessage, setLogoutMessage] = useState(""); 
+
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -42,12 +48,12 @@ function Header() {
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:8080/api/logout");
-      setUser(null);
+      setIsAuth(null);
       setLogoutMessage("You have been logged out."); // show message
       setTimeout(() => {
         setLogoutMessage(""); // clear after a few seconds (optional)
         navigate("/login");   // redirect after message
-      }, 2000); // 2 seconds delay
+      }, 1000); // 2 seconds delay
     } catch (error) {
       console.error("Logout failed:", error);
     }
