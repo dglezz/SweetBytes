@@ -47,13 +47,15 @@ function Header() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:8080/api/logout");
+      await axios.post("http://localhost:8080/api/logout", {
+        credentials: "include",
+      });
       setIsAuth(null);
       setLogoutMessage("You have been logged out."); // show message
       setTimeout(() => {
         setLogoutMessage(""); // clear after a few seconds (optional)
         navigate("/login");   // redirect after message
-      }, 1000); // 2 seconds delay
+      }, 1000); // 1 second delay
     } catch (error) {
       console.error("Logout failed:", error);
     }
