@@ -8,6 +8,7 @@ function ShoppingPage({ addToCart }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [adding, setAdding] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,6 +48,7 @@ function ShoppingPage({ addToCart }) {
     const orderID = sessionStorage.getItem("orderID") || "default_order";
 
     try {
+      setAdding(true);
       const response = await axios.post("http://localhost:8080/api/updateOrder", {
         orderID: orderID,
         itemID: item.ItemID,
@@ -57,6 +59,8 @@ function ShoppingPage({ addToCart }) {
       addToCart(item);
     } catch (err) {
       console.error("Error updating order:", err);
+    } finally {
+      setAdding(false);
     }
   };
 
@@ -85,7 +89,9 @@ function ShoppingPage({ addToCart }) {
 
       <div className="shopping-grid">
         
-      {filteredItems.length === 0 ? (
+      {items.length === 0 ? (
+        <p>This store is sold out of everything!</p>
+      ) : filteredItems.length === 0 ? (
           <p>No items match your search.</p>
         ) : (
           filteredItems.map((item) => (
@@ -98,8 +104,9 @@ function ShoppingPage({ addToCart }) {
               <button
                 className="add-to-cart-button"
                 onClick={() => handleAddToCart(item)}
+                disabled={adding}
               >
-                Add to Cart
+                {adding ? "Adding..." : "Add to Cart"}
               </button>
             </div>
           ))
