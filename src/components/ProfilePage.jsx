@@ -13,11 +13,11 @@ const ProfilePage = () => {
   useEffect(() => {
     const checkAuthAndFetchProfile = async () => {
       try {
-        const authResponse = await fetch("http://localhost:8080/api/checkAuth", {
+        const authResponse = await fetch("http://localhost:8080/api/protected-data", {
           credentials: "include",
         });
-        const authData = await authResponse.json();
-        if (!authResponse.ok || !authData.authenticated) {
+        console.log(authResponse)
+        if (!authResponse.status === 200) {
           navigate("/login");
           return;
         }
