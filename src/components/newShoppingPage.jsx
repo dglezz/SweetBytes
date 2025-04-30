@@ -12,28 +12,38 @@ function ShoppingPage({ addToCart }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchItems() {
+    const fetchData = async () => {
       try {
+        const authResponse = await fetch("http://localhost:8080/api/protected-data", {
+          credentials: "include",
+        });
+  
+        if (authResponse.status !== 200) {
+          navigate("/login");
+          return;
+        }
+  
         const response = await axios.get("http://localhost:8080/api/getItemsInStock", {
           withCredentials: true,
         });
-
+  
         if (response.data !== null) {
           setItems(response.data);
-          console.log(response.data)
+          console.log(response.data);
         } else {
           setItems([]);
         }
+  
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching items:", err);
+        console.error("Error checking auth or fetching items:", err);
         setError("Failed to load items");
-        setLoading(false); 
+        setLoading(false);
       }
-    }
-
-    fetchItems();
-  }, []);
+    };
+  
+    fetchData();
+  }, [navigate]);
 
   if (loading) {
     return <div>Loading...</div>;

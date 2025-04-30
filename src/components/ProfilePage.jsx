@@ -17,7 +17,7 @@ const ProfilePage = () => {
           credentials: "include",
         });
         console.log(authResponse)
-        if (!authResponse.status === 200) {
+        if (authResponse.status !== 200) {
           navigate("/login");
           return;
         }
