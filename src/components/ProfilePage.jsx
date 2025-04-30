@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../ProfilePage.css";
 
 const ProfilePage = () => {
@@ -7,30 +8,37 @@ const ProfilePage = () => {
   const [phone, setPhone] = useState("");
   const [reviews, setReviews] = useState([]);
   const [orders, setOrders] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const checkAuthAndFetchProfile = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8080/api/getAllUserInfo",
-          {
-            credentials: "include",
-          }
-        );
-        const data = await response.json();
+        const authResponse = await fetch("http://localhost:8080/api/checkAuth", {
+          credentials: "include",
+        });
+        const authData = await authResponse.json();
+        if (!authResponse.ok || !authData.authenticated) {
+          navigate("/login");
+          return;
+        }
+
+        const profileResponse = await fetch("http://localhost:8080/api/getAllUserInfo", {
+          credentials: "include",
+        });
+        const data = await profileResponse.json();
         setName(data.Name);
         setEmail(data.Email);
         setPhone(data.Phone_Number);
         setReviews(data.reviews || []);
-        console.log(data)
         setOrders(data.orders || []);
       } catch (error) {
-        console.error("Error fetching profile:", error);
+        console.error("Error checking auth or fetching profile:", error);
+        navigate("/login");
       }
     };
 
-    fetchProfile();
-  }, []);
+    checkAuthAndFetchProfile();
+  }, [navigate]);
 
   const handleSave = async () => {
     try {
@@ -73,7 +81,7 @@ const ProfilePage = () => {
         const data = await response.json();
         if (response.ok) {
           alert(data.message || "Account deleted successfully!");
-          window.location.href = "/"; // Redirect to home after delete
+          window.location.href = "/";
         } else {
           alert(data.message || "Failed to delete account.");
         }
@@ -90,7 +98,7 @@ const ProfilePage = () => {
       <div className="profile-box">
         <div className="profile-icon">👤</div>
         <h1 className="profile-name">{name || "Loading..."}</h1>
-  
+
         <div className="profile-field">
           <label>Email:</label>
           <input
@@ -99,7 +107,7 @@ const ProfilePage = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-  
+
         <div className="profile-field">
           <label>Phone Number:</label>
           <input
@@ -108,14 +116,14 @@ const ProfilePage = () => {
             onChange={(e) => setPhone(e.target.value)}
           />
         </div>
-  
+
         <div className="profile-buttons">
           <button onClick={handleSave}>Save Changes</button>
           <button onClick={handleClear}>Clear All</button>
           <button onClick={handleDelete}>Delete Account</button>
         </div>
       </div>
-  
+
       <div className="profile-extra-info">
         <div className="info-columns">
           <div className="reviews-section">
@@ -134,7 +142,7 @@ const ProfilePage = () => {
               </ul>
             )}
           </div>
-  
+
           <div className="orders-section">
             <h2>Your Orders</h2>
             {orders.length === 0 ? (
@@ -154,7 +162,7 @@ const ProfilePage = () => {
         </div>
       </div>
     </div>
-  );  
+  );
 };
 
 export default ProfilePage;

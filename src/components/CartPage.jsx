@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./RemoveButton.css"
+import "./RemoveButton.css";
+
 
 function CartPage({ updateCartItem }) {
   const navigate = useNavigate();
@@ -9,28 +10,41 @@ function CartPage({ updateCartItem }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [orderInfo, setOrderInfo] = useState(null);
+  const [isAuth, setIsAuth] = useState(null);
 
-  // Fetch cart items and order info
   useEffect(() => {
-    const fetchCartItemsAndOrderInfo = async () => {
+    const fetchData = async () => {
+      try {
+        const authRes = await axios.get("http://localhost:8080/api/protected-data", {
+          withCredentials: true,
+        });
+
+        if (authRes.status !== 200) {
+          setIsAuth(false);
+          return;
+        }
+
+        setIsAuth(true);
+      } catch (err) {
+        setIsAuth(false);
+        return;
+      }
+
       const orderID = sessionStorage.getItem("orderID") || "default_order";
 
       try {
         setLoading(true);
-        
-        // Fetch cart items
+
         const cartResponse = await axios.get("http://localhost:8080/api/order/items", {
           params: { orderID },
-          withCredentials: true, 
+          withCredentials: true,
         });
         setCartItems(cartResponse.data);
 
-        // Fetch order info (total price etc.)
         const orderResponse = await axios.get("http://localhost:8080/api/orderInfo", {
           withCredentials: true,
         });
-        console.log(orderResponse)
-        setOrderInfo(orderResponse.data); // Save the order info
+        setOrderInfo(orderResponse.data);
 
         setLoading(false);
       } catch (err) {
@@ -40,22 +54,19 @@ function CartPage({ updateCartItem }) {
       }
     };
 
-    fetchCartItemsAndOrderInfo();
+    fetchData();
   }, []);
 
-  // Function to handle quantity change
   const handleQuantityChange = async (item, delta) => {
     const newQuantity = item.Quantity + delta;
-  
     if (newQuantity <= 0) return;
-  
+
     const orderID = sessionStorage.getItem("orderID") || "default_order";
-  
+
     try {
       setLoading(true);
-  
-      // Send the updated quantity to the backend API
-      const response = await axios.post(
+
+      await axios.post(
         "http://localhost:8080/api/updateOrder",
         {
           orderID: orderID,
@@ -64,11 +75,8 @@ function CartPage({ updateCartItem }) {
         },
         { withCredentials: true }
       );
-  
-      console.log("Order updated:", response.data);
-  
+
       await refreshCartAndOrderInfo();
-  
       setLoading(false);
     } catch (err) {
       console.error("Error updating order:", err);
@@ -77,15 +85,13 @@ function CartPage({ updateCartItem }) {
     }
   };
 
-  // Function to handle deleting an item from the cart
   const handleDeleteItem = async (itemID) => {
     const orderID = sessionStorage.getItem("orderID") || "default_order";
 
     try {
       setLoading(true);
 
-     
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:8080/api/deleteItemInOrder",
         {
           orderID: orderID,
@@ -94,22 +100,8 @@ function CartPage({ updateCartItem }) {
         { withCredentials: true }
       );
 
-      console.log("Item deleted:", response.data);
-
-      
       updateCartItem(itemID, 0);
-
-      
-      const cartResponse = await axios.get(
-        "http://localhost:8080/api/order/items",
-        { withCredentials: true }
-      );
-
       await refreshCartAndOrderInfo();
-      
-      setCartItems(cartResponse.data); 
-  
-      setLoading(false);
 
       setLoading(false);
     } catch (err) {
@@ -119,7 +111,6 @@ function CartPage({ updateCartItem }) {
     }
   };
 
-  // Helper function to refresh cart items and order info
   const refreshCartAndOrderInfo = async () => {
     const orderID = sessionStorage.getItem("orderID") || "default_order";
 
@@ -134,7 +125,6 @@ function CartPage({ updateCartItem }) {
         withCredentials: true,
       });
       setOrderInfo(orderResponse.data);
-
     } catch (err) {
       console.error("Error refreshing cart/order info:", err);
     }
@@ -149,10 +139,17 @@ function CartPage({ updateCartItem }) {
     });
   };
 
+  if (isAuth === null || loading) {
+    return <div>Loading cart items...</div>;
+  }
+
+  if (isAuth === false) {
+    navigate("/login");
+  }
+
   return (
     <div className="cart-page">
       <h1>Shopping Cart</h1>
-      {loading && <p>Loading cart items...</p>}
       {error && <p>{error}</p>}
       {cartItems.length === 0 ? (
         <p>Your cart is empty.</p>
@@ -166,24 +163,17 @@ function CartPage({ updateCartItem }) {
               <p>Quantity: {item.Quantity}</p>
 
               <div className="quantity-controls">
-                <button
-                  onClick={() => handleQuantityChange(item, -1)}  // Decrease quantity
-                  disabled={loading}
-                >
+                <button onClick={() => handleQuantityChange(item, -1)} disabled={loading}>
                   -
                 </button>
-                <button
-                  onClick={() => handleQuantityChange(item, 1)}  // Increase quantity
-                  disabled={loading} 
-                >
+                <button onClick={() => handleQuantityChange(item, 1)} disabled={loading}>
                   +
                 </button>
               </div>
 
-              {/* Delete Button */}
               <button
                 className="remove-button"
-                onClick={() => handleDeleteItem(item.ItemID)} 
+                onClick={() => handleDeleteItem(item.ItemID)}
                 disabled={loading}
               >
                 Remove
@@ -193,7 +183,6 @@ function CartPage({ updateCartItem }) {
         ))
       )}
 
-      {/* Show order total */}
       {orderInfo && (
         <div className="order-summary">
           <h2>Order Summary</h2>
@@ -206,7 +195,6 @@ function CartPage({ updateCartItem }) {
           Proceed to Checkout
         </button>
       )}
-
     </div>
   );
 }

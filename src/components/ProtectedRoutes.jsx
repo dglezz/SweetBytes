@@ -11,11 +11,7 @@ function ProtectedRoute({ children }) {
           credentials: "include",
         });
 
-        if (res.status === 200) {
-          setIsAuth(true); // User is authenticated
-        } else {
-          setIsAuth(false); // User is not authenticated
-        }
+        setIsAuth(res.status === 200);
       } catch (error) {
         console.error("Error checking authentication", error);
         setIsAuth(false);
@@ -25,12 +21,17 @@ function ProtectedRoute({ children }) {
     checkAuth();
   }, []);
 
-  // If not authenticated, redirect to login page
-  if (isAuth === false) {
+  // Show a loading spinner or blank screen while checking
+  if (isAuth === null) {
+    return <div>Loading...</div>; // or a custom loading spinner
+  }
+
+  if (!isAuth) {
     return <Navigate to="/login" replace />;
   }
 
   return children;
 }
+
 
 export default ProtectedRoute;
